@@ -1,7 +1,9 @@
-/build
-/doc
-/index.html
-
+/test
+/map/tool
+/map/raw
+/theme/tool
+/theme/thumb
+todo
 npm-debug.log
-
-
+/benchmark
+echarts.d.ts

@@ -2,7 +2,6 @@
     "bitwise": false,
     "camelcase": true,
     "curly": true,
-    "es3": true,
     "eqeqeq": false,
     "forin": false,
     "immed": true,
@@ -20,13 +19,14 @@
     "trailing": false,
     "maxparams": 20,
     "maxdepth": 6,
-    "maxlen": 120,
+    "maxlen": 200,
 
     "asi": false,
     "boss": false,
     "debug": false,
     "eqnull": true,
-    "esnext": false,
+    "esversion": 6,
+    "module": true,
     "evil": true,
     "expr": true,
     "funcscope": false,
@@ -65,7 +65,6 @@
     "white": false,
 
     "predef": [
-        "define", 
-        "require"
+        "global"
     ]
 }
