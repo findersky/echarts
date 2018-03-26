@@ -15,8 +15,6 @@ var asc = numberUtil.asc;
 var linearMap = numberUtil.linearMap;
 var noop = zrUtil.noop;
 
-var DEFAULT_COLOR = ['#f6efa6', '#d88273', '#bf444c'];
-
 var VisualMapModel = echarts.extendComponentModel({
 
     type: 'visualMap',
@@ -311,8 +309,23 @@ var VisualMapModel = echarts.extendComponentModel({
      */
     getDataDimension: function (list) {
         var optDim = this.option.dimension;
-        return optDim != null
-            ? optDim : list.dimensions.length - 1;
+        var listDimensions = list.dimensions;
+        if (optDim == null && !listDimensions.length) {
+            return;
+        }
+
+        if (optDim != null) {
+            return list.getDimension(optDim);
+        }
+
+        var dimNames = list.dimensions;
+        for (var i = dimNames.length - 1; i >= 0; i--) {
+            var dimName = dimNames[i];
+            var dimInfo = list.getDimensionInfo(dimName);
+            if (!dimInfo.isCalculationCoord) {
+                return dimName;
+            }
+        }
     },
 
     /**
@@ -327,6 +340,7 @@ var VisualMapModel = echarts.extendComponentModel({
      * @protected
      */
     completeVisualOption: function () {
+        var ecModel = this.ecModel;
         var thisOption = this.option;
         var base = {inRange: thisOption.inRange, outOfRange: thisOption.outOfRange};
 
@@ -363,7 +377,7 @@ var VisualMapModel = echarts.extendComponentModel({
             // the second time the default color will be erased. So we change to use
             // constant DEFAULT_COLOR.
             // If user do not want the defualt color, set inRange: {color: null}.
-            base.inRange = base.inRange || {color: DEFAULT_COLOR};
+            base.inRange = base.inRange || {color: ecModel.get('gradientColor')};
 
             // If using shortcut like: {inRange: 'symbol'}, complete default value.
             each(this.stateList, function (state) {

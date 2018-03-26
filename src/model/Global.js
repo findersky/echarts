@@ -19,19 +19,16 @@
  */
 
 import {__DEV__} from '../config';
-import * as zrUtil from 'zrender/src/core/util';
+import {
+    each, filter, map, isArray, indexOf, isObject, isString,
+    createHashMap, assert, clone, merge, extend, mixin
+} from 'zrender/src/core/util';
 import * as modelUtil from '../util/model';
 import Model from './Model';
 import ComponentModel from './Component';
 import globalDefault from './globalDefault';
-import colorPaletteMinin from './mixin/colorPalette';
-
-var each = zrUtil.each;
-var filter = zrUtil.filter;
-var map = zrUtil.map;
-var isArray = zrUtil.isArray;
-var indexOf = zrUtil.indexOf;
-var isObject = zrUtil.isObject;
+import colorPaletteMixin from './mixin/colorPalette';
+import {resetSourceDefaulter} from '../data/helper/sourceHelper';
 
 var OPTION_INNER_KEY = '\0_ec_inner';
 
@@ -43,8 +40,6 @@ var OPTION_INNER_KEY = '\0_ec_inner';
  * @param {Object} theme
  */
 var GlobalModel = Model.extend({
-
-    constructor: GlobalModel,
 
     init: function (option, parentModel, theme, optionManager) {
         theme = theme || {};
@@ -64,7 +59,7 @@ var GlobalModel = Model.extend({
     },
 
     setOption: function (option, optionPreprocessorFuncs) {
-        zrUtil.assert(
+        assert(
             !(OPTION_INNER_KEY in option),
             'please use chart.getOption()'
         );
@@ -127,30 +122,32 @@ var GlobalModel = Model.extend({
         var componentsMap = this._componentsMap;
         var newCptTypes = [];
 
-        // 如果不存在对应的 component model 则直接 merge
+        resetSourceDefaulter(this);
+
+        // If no component class, merge directly.
+        // For example: color, animaiton options, etc.
         each(newOption, function (componentOption, mainType) {
             if (componentOption == null) {
                 return;
             }
 
             if (!ComponentModel.hasClass(mainType)) {
+                // globalSettingTask.dirty();
                 option[mainType] = option[mainType] == null
-                    ? zrUtil.clone(componentOption)
-                    : zrUtil.merge(option[mainType], componentOption, true);
+                    ? clone(componentOption)
+                    : merge(option[mainType], componentOption, true);
             }
-            else {
+            else if (mainType) {
                 newCptTypes.push(mainType);
             }
         });
 
-        // FIXME OPTION 同步是否要改回原来的
         ComponentModel.topologicalTravel(
             newCptTypes, ComponentModel.getAllClassMainTypes(), visitComponent, this
         );
 
-        this._seriesIndices = this._seriesIndices || [];
-
         function visitComponent(mainType, dependencies) {
+
             var newCptOptionList = modelUtil.normalizeToArray(newOption[mainType]);
 
             var mapResult = modelUtil.mappingToExists(
@@ -179,7 +176,7 @@ var GlobalModel = Model.extend({
                 var componentModel = resultItem.exist;
                 var newCptOption = resultItem.option;
 
-                zrUtil.assert(
+                assert(
                     isObject(newCptOption) || componentModel,
                     'Empty component definition'
                 );
@@ -198,12 +195,13 @@ var GlobalModel = Model.extend({
 
                     if (componentModel && componentModel instanceof ComponentModelClass) {
                         componentModel.name = resultItem.keyInfo.name;
+                        // componentModel.settingTask && componentModel.settingTask.dirty();
                         componentModel.mergeOption(newCptOption, this);
                         componentModel.optionUpdated(newCptOption, false);
                     }
                     else {
                         // PENDING Global as parent ?
-                        var extraOpt = zrUtil.extend(
+                        var extraOpt = extend(
                             {
                                 dependentModels: dependentModels,
                                 componentIndex: index
@@ -213,8 +211,9 @@ var GlobalModel = Model.extend({
                         componentModel = new ComponentModelClass(
                             newCptOption, this, this, extraOpt
                         );
-                        zrUtil.extend(componentModel, extraOpt);
+                        extend(componentModel, extraOpt);
                         componentModel.init(newCptOption, this, this, extraOpt);
+
                         // Call optionUpdated after init.
                         // newCptOption has been used as componentModel.option
                         // and may be merged with theme and default, so pass null
@@ -229,9 +228,13 @@ var GlobalModel = Model.extend({
 
             // Backup series for filtering.
             if (mainType === 'series') {
-                this._seriesIndices = createSeriesIndices(componentsMap.get('series'));
+                createSeriesIndices(this, componentsMap.get('series'));
             }
         }
+
+        this._seriesIndicesMap = createHashMap(
+            this._seriesIndices = this._seriesIndices || []
+        );
     },
 
     /**
@@ -240,7 +243,7 @@ var GlobalModel = Model.extend({
      * @return {Object}
      */
     getOption: function () {
-        var option = zrUtil.clone(this.option);
+        var option = clone(this.option);
 
         each(option, function (opts, mainType) {
             if (ComponentModel.hasClass(mainType)) {
@@ -439,7 +442,7 @@ var GlobalModel = Model.extend({
                 });
             });
         }
-        else if (zrUtil.isString(mainType)) {
+        else if (isString(mainType)) {
             each(componentsMap.get(mainType), cb, context);
         }
         else if (isObject(mainType)) {
@@ -468,6 +471,9 @@ var GlobalModel = Model.extend({
     },
 
     /**
+     * Get series list before filtered by type.
+     * FIXME: rename to getRawSeriesByType?
+     *
      * @param {string} subType
      * @return {Array.<module:echarts/model/Series>}
      */
@@ -483,6 +489,13 @@ var GlobalModel = Model.extend({
      */
     getSeries: function () {
         return this._componentsMap.get('series').slice();
+    },
+
+    /**
+     * @return {number}
+     */
+    getSeriesCount: function () {
+        return this._componentsMap.get('series').length;
     },
 
     /**
@@ -544,7 +557,7 @@ var GlobalModel = Model.extend({
      */
     isSeriesFiltered: function (seriesModel) {
         assertSeriesInitialized(this);
-        return zrUtil.indexOf(this._seriesIndices, seriesModel.componentIndex) < 0;
+        return this._seriesIndicesMap.get(seriesModel.componentIndex) == null;
     },
 
     /**
@@ -563,13 +576,13 @@ var GlobalModel = Model.extend({
         var filteredSeries = filter(
             this._componentsMap.get('series'), cb, context
         );
-        this._seriesIndices = createSeriesIndices(filteredSeries);
+        createSeriesIndices(this, filteredSeries);
     },
 
-    restoreData: function () {
+    restoreData: function (payload) {
         var componentsMap = this._componentsMap;
 
-        this._seriesIndices = createSeriesIndices(componentsMap.get('series'));
+        createSeriesIndices(this, componentsMap.get('series'));
 
         var componentTypes = [];
         componentsMap.each(function (components, componentType) {
@@ -581,7 +594,8 @@ var GlobalModel = Model.extend({
             ComponentModel.getAllClassMainTypes(),
             function (componentType, dependencies) {
                 each(componentsMap.get(componentType), function (component) {
-                    component.restoreData();
+                    (componentType !== 'series' || !isNotTargetSeries(component, payload))
+                        && component.restoreData();
                 });
             }
         );
@@ -589,17 +603,35 @@ var GlobalModel = Model.extend({
 
 });
 
+function isNotTargetSeries(seriesModel, payload) {
+    if (payload) {
+        var index = payload.seiresIndex;
+        var id = payload.seriesId;
+        var name = payload.seriesName;
+        return (index != null && seriesModel.componentIndex !== index)
+            || (id != null && seriesModel.id !== id)
+            || (name != null && seriesModel.name !== name);
+    }
+}
+
 /**
  * @inner
  */
 function mergeTheme(option, theme) {
-    zrUtil.each(theme, function (themeItem, name) {
+    // PENDING
+    // NOT use `colorLayer` in theme if option has `color`
+    var notMergeColorLayer = option.color && !option.colorLayer;
+
+    each(theme, function (themeItem, name) {
+        if (name === 'colorLayer' && notMergeColorLayer) {
+            return;
+        }
         // 如果有 component model 则把具体的 merge 逻辑交给该 model 处理
         if (!ComponentModel.hasClass(name)) {
             if (typeof themeItem === 'object') {
                 option[name] = !option[name]
-                    ? zrUtil.clone(themeItem)
-                    : zrUtil.merge(option[name], themeItem, false);
+                    ? clone(themeItem)
+                    : merge(option[name], themeItem, false);
             }
             else {
                 if (option[name] == null) {
@@ -624,7 +656,7 @@ function initBase(baseOption) {
      * @type {Object.<string, Array.<module:echarts/model/Model>>}
      * @private
      */
-    this._componentsMap = zrUtil.createHashMap({series: []});
+    this._componentsMap = createHashMap({series: []});
 
     /**
      * Mapping between filtered series list and raw series list.
@@ -632,12 +664,14 @@ function initBase(baseOption) {
      * @type {Array.<nubmer>}
      * @private
      */
-    this._seriesIndices = null;
+    this._seriesIndices;
+
+    this._seriesIndicesMap;
 
     mergeTheme(baseOption, this._theme.option);
 
     // TODO Needs clone when merging to the unexisted property
-    zrUtil.merge(baseOption, globalDefault, false);
+    merge(baseOption, globalDefault, false);
 
     this.mergeOption(baseOption);
 }
@@ -648,7 +682,7 @@ function initBase(baseOption) {
  * @return {Object} key: {string} type, value: {Array.<Object>} models
  */
 function getComponentsByTypes(componentsMap, types) {
-    if (!zrUtil.isArray(types)) {
+    if (!isArray(types)) {
         types = types ? [types] : [];
     }
 
@@ -678,10 +712,12 @@ function determineSubType(mainType, newCptOption, existComponent) {
 /**
  * @inner
  */
-function createSeriesIndices(seriesModels) {
-    return map(seriesModels, function (series) {
-        return series.componentIndex;
-    }) || [];
+function createSeriesIndices(ecModel, seriesModels) {
+    ecModel._seriesIndicesMap = createHashMap(
+        ecModel._seriesIndices = map(seriesModels, function (series) {
+            return series.componentIndex;
+        }) || []
+    );
 }
 
 /**
@@ -710,6 +746,6 @@ function assertSeriesInitialized(ecModel) {
     }
 }
 
-zrUtil.mixin(GlobalModel, colorPaletteMinin);
+mixin(GlobalModel, colorPaletteMixin);
 
 export default GlobalModel;

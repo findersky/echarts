@@ -17,10 +17,10 @@ var CandlestickView = ChartView.extend({
 zrUtil.mixin(CandlestickView, viewMixin, true);
 
 // Update common properties
-var normalStyleAccessPath = ['itemStyle', 'normal'];
-var emphasisStyleAccessPath = ['itemStyle', 'emphasis'];
+var normalStyleAccessPath = ['itemStyle'];
+var emphasisStyleAccessPath = ['emphasis', 'itemStyle'];
 
-function updateStyle(itemGroup, data, idx) {
+function updateStyle(data, idx, boxEl, whiskerEl, bodyEl) {
     var itemModel = data.getItemModel(idx);
     var normalItemStyleModel = itemModel.getModel(normalStyleAccessPath);
     var color = data.getItemVisual(idx, 'color');
@@ -32,17 +32,15 @@ function updateStyle(itemGroup, data, idx) {
         ['color', 'color0', 'borderColor', 'borderColor0']
     );
 
-    var whiskerEl = itemGroup.childAt(itemGroup.whiskerIndex);
     whiskerEl.useStyle(itemStyle);
     whiskerEl.style.stroke = borderColor;
 
-    var bodyEl = itemGroup.childAt(itemGroup.bodyIndex);
     bodyEl.useStyle(itemStyle);
     bodyEl.style.fill = color;
     bodyEl.style.stroke = borderColor;
 
     var hoverStyle = itemModel.getModel(emphasisStyleAccessPath).getItemStyle();
-    graphic.setHoverStyle(itemGroup, hoverStyle);
+    graphic.setHoverStyle(boxEl, hoverStyle);
 }
 
 export default CandlestickView;

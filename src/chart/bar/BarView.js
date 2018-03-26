@@ -7,7 +7,7 @@ import Model from '../../model/Model';
 import barItemStyle from './barItemStyle';
 
 
-var BAR_BORDER_WIDTH_QUERY = ['itemStyle', 'normal', 'barBorderWidth'];
+var BAR_BORDER_WIDTH_QUERY = ['itemStyle', 'barBorderWidth'];
 
 // FIXME
 // Just for compatible with ec2.
@@ -162,7 +162,14 @@ var elementCreator = {
         data, dataIndex, itemModel, layout, isRadial,
         animationModel, isUpdate
     ) {
-        var sector = new graphic.Sector({shape: zrUtil.extend({}, layout)});
+        // Keep the same logic with bar in catesion: use end value to control
+        // direction. Notice that if clockwise is true (by default), the sector
+        // will always draw clockwisely, no matter whether endAngle is greater
+        // or less than startAngle.
+        var clockwise = layout.startAngle < layout.endAngle;
+        var sector = new graphic.Sector({
+            shape: zrUtil.defaults({clockwise: clockwise}, layout)
+        });
 
         // Animation
         if (animationModel) {
@@ -238,8 +245,8 @@ function updateStyle(
 ) {
     var color = data.getItemVisual(dataIndex, 'color');
     var opacity = data.getItemVisual(dataIndex, 'opacity');
-    var itemStyleModel = itemModel.getModel('itemStyle.normal');
-    var hoverStyle = itemModel.getModel('itemStyle.emphasis').getBarItemStyle();
+    var itemStyleModel = itemModel.getModel('itemStyle');
+    var hoverStyle = itemModel.getModel('emphasis.itemStyle').getBarItemStyle();
 
     if (!isPolar) {
         el.setShape('r', itemStyleModel.get('barBorderRadius') || 0);

@@ -113,7 +113,7 @@ export default TimelineView.extend({
     },
 
     _layout: function (timelineModel, api) {
-        var labelPosOpt = timelineModel.get('label.normal.position');
+        var labelPosOpt = timelineModel.get('label.position');
         var orient = timelineModel.get('orient');
         var viewRect = getViewRect(timelineModel, api);
         // Auto label offset.
@@ -147,13 +147,13 @@ export default TimelineView.extend({
         var mainLength = orient === 'vertical' ? viewRect.height : viewRect.width;
 
         var controlModel = timelineModel.getModel('controlStyle');
-        var showControl = controlModel.get('show');
+        var showControl = controlModel.get('show', true);
         var controlSize = showControl ? controlModel.get('itemSize') : 0;
         var controlGap = showControl ? controlModel.get('itemGap') : 0;
         var sizePlusGap = controlSize + controlGap;
 
         // Special label rotate.
-        var labelRotation = timelineModel.get('label.normal.rotate') || 0;
+        var labelRotation = timelineModel.get('label.rotate') || 0;
         labelRotation = labelRotation * PI / 180; // To radian.
 
         var playPosition;
@@ -161,7 +161,6 @@ export default TimelineView.extend({
         var nextBtnPosition;
         var axisExtent;
         var controlPosition = controlModel.get('position', true);
-        var showControl = controlModel.get('show', true);
         var showPlayBtn = showControl && controlModel.get('showPlayBtn', true);
         var showPrevBtn = showControl && controlModel.get('showPrevBtn', true);
         var showNextBtn = showControl && controlModel.get('showNextBtn', true);
@@ -193,9 +192,9 @@ export default TimelineView.extend({
             rotation: rotationMap[orient],
             labelRotation: labelRotation,
             labelPosOpt: labelPosOpt,
-            labelAlign: timelineModel.get('label.normal.align') || labelAlignMap[orient],
-            labelBaseline: timelineModel.get('label.normal.verticalAlign')
-                || timelineModel.get('label.normal.baseline')
+            labelAlign: timelineModel.get('label.align') || labelAlignMap[orient],
+            labelBaseline: timelineModel.get('label.verticalAlign')
+                || timelineModel.get('label.baseline')
                 || labelBaselineMap[orient],
 
             // Based on mainGroup.
@@ -222,7 +221,7 @@ export default TimelineView.extend({
 
         var viewRect = layoutInfo.viewRect;
         if (layoutInfo.orient === 'vertical') {
-            // transfrom to horizontal, inverse rotate by left-top point.
+            // transform to horizontal, inverse rotate by left-top point.
             var m = matrix.create();
             var rotateOriginX = viewRect.x;
             var rotateOriginY = viewRect.y + viewRect.height;
@@ -350,8 +349,8 @@ export default TimelineView.extend({
 
             var tickCoord = axis.dataToCoord(value);
             var itemModel = data.getItemModel(dataIndex);
-            var itemStyleModel = itemModel.getModel('itemStyle.normal');
-            var hoverStyleModel = itemModel.getModel('itemStyle.emphasis');
+            var itemStyleModel = itemModel.getModel('itemStyle');
+            var hoverStyleModel = itemModel.getModel('emphasis.itemStyle');
             var symbolOpt = {
                 position: [tickCoord, 0],
                 onclick: bind(this._changeTimeline, this, dataIndex)
@@ -374,7 +373,7 @@ export default TimelineView.extend({
      * @private
      */
     _renderAxisLabel: function (layoutInfo, group, axis, timelineModel) {
-        var labelModel = timelineModel.getModel('label.normal');
+        var labelModel = timelineModel.getModel('label');
 
         if (!labelModel.get('show')) {
             return;
@@ -393,8 +392,8 @@ export default TimelineView.extend({
             }
 
             var itemModel = data.getItemModel(dataIndex);
-            var normalLabelModel = itemModel.getModel('label.normal');
-            var hoverLabelModel = itemModel.getModel('label.emphasis');
+            var normalLabelModel = itemModel.getModel('label');
+            var hoverLabelModel = itemModel.getModel('emphasis.label');
             var tickCoord = axis.dataToCoord(tick);
             var textEl = new graphic.Text({
                 position: [tickCoord, 0],
@@ -423,8 +422,8 @@ export default TimelineView.extend({
         var controlSize = layoutInfo.controlSize;
         var rotation = layoutInfo.rotation;
 
-        var itemStyle = timelineModel.getModel('controlStyle.normal').getItemStyle();
-        var hoverStyle = timelineModel.getModel('controlStyle.emphasis').getItemStyle();
+        var itemStyle = timelineModel.getModel('controlStyle').getItemStyle();
+        var hoverStyle = timelineModel.getModel('emphasis.controlStyle').getItemStyle();
         var rect = [0, -controlSize / 2, controlSize, controlSize];
         var playState = timelineModel.getPlayState();
         var inverse = timelineModel.get('inverse', true);

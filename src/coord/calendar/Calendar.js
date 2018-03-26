@@ -29,7 +29,7 @@ Calendar.prototype = {
 
     // Required in createListFromData
     getDimensionsInfo: function () {
-        return [{name: 'time', type: 'time'}];
+        return [{name: 'time', type: 'time'}, 'value'];
     },
 
     getRangeInfo: function () {
@@ -127,7 +127,7 @@ Calendar.prototype = {
 
         this._firstDayOfWeek = +this._model.getModel('dayLabel').get('firstDay');
         this._orient = this._model.get('orient');
-        this._lineWidth = this._model.getModel('itemStyle.normal').getItemStyle().lineWidth || 0;
+        this._lineWidth = this._model.getModel('itemStyle').getItemStyle().lineWidth || 0;
 
 
         this._rangeInfo = this._getRangeInfo(this._initRangeOption());

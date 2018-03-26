@@ -11,8 +11,8 @@ var ToolboxModel = echarts.extendComponentModel({
         ignoreSize: true
     },
 
-    mergeDefaultAndTheme: function (option) {
-        ToolboxModel.superApply(this, 'mergeDefaultAndTheme', arguments);
+    optionUpdated: function () {
+        ToolboxModel.superApply(this, 'optionUpdated', arguments);
 
         zrUtil.each(this.option.feature, function (featureOpt, featureName) {
             var Feature = featureManager.get(featureName);
@@ -54,11 +54,11 @@ var ToolboxModel = echarts.extendComponentModel({
         showTitle: true,
 
         iconStyle: {
-            normal: {
-                borderColor: '#666',
-                color: 'none'
-            },
-            emphasis: {
+            borderColor: '#666',
+            color: 'none'
+        },
+        emphasis: {
+            iconStyle: {
                 borderColor: '#3E98C5'
             }
         }

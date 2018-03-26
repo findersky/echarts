@@ -9,6 +9,7 @@
 
 import * as zrUtil from 'zrender/src/core/util';
 import Scale from './Scale';
+import OrdinalMeta from '../data/OrdinalMeta';
 
 var scaleProto = Scale.prototype;
 
@@ -16,14 +17,22 @@ var OrdinalScale = Scale.extend({
 
     type: 'ordinal',
 
-    init: function (data, extent) {
-        this._data = data;
-        this._extent = extent || [0, data.length - 1];
+    /**
+     * @param {module:echarts/data/OrdianlMeta|Array.<string>} ordinalMeta
+     */
+    init: function (ordinalMeta, extent) {
+        // Caution: Should not use instanceof, consider ec-extensions using
+        // import approach to get OrdinalMeta class.
+        if (!ordinalMeta || zrUtil.isArray(ordinalMeta)) {
+            ordinalMeta = new OrdinalMeta({categories: ordinalMeta});
+        }
+        this._ordinalMeta = ordinalMeta;
+        this._extent = extent || [0, ordinalMeta.categories.length - 1];
     },
 
     parse: function (val) {
         return typeof val === 'string'
-            ? zrUtil.indexOf(this._data, val)
+            ? this._ordinalMeta.getOrdinal(val)
             // val might be float.
             : Math.round(val);
     },
@@ -31,7 +40,7 @@ var OrdinalScale = Scale.extend({
     contain: function (rank) {
         rank = this.parse(rank);
         return scaleProto.contain.call(this, rank)
-            && this._data[rank] != null;
+            && this._ordinalMeta.categories[rank] != null;
     },
 
     /**
@@ -69,7 +78,7 @@ var OrdinalScale = Scale.extend({
      * @return {string}
      */
     getLabel: function (n) {
-        return this._data[n];
+        return this._ordinalMeta.categories[n];
     },
 
     /**
@@ -83,7 +92,7 @@ var OrdinalScale = Scale.extend({
      * @override
      */
     unionExtentFromData: function (data, dim) {
-        this.unionExtent(data.getDataExtent(dim, false));
+        this.unionExtent(data.getApproximateExtent(dim));
     },
 
     niceTicks: zrUtil.noop,

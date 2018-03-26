@@ -143,7 +143,7 @@ Parallel.prototype = {
 
             each(this.dimensions, function (dim) {
                 var axis = this._axesMap.get(dim);
-                axis.scale.unionExtentFromData(data, dim);
+                axis.scale.unionExtentFromData(data, data.mapDimension(dim));
                 axisHelper.niceScaleExtent(axis.scale, axis.model);
             }, this);
         }, this);
@@ -335,15 +335,26 @@ Parallel.prototype = {
      * @param {module:echarts/data/List} data
      * @param {Functio} cb param: {string} activeState 'active' or 'inactive' or 'normal'
      *                            {number} dataIndex
-     * @param {Object} context
+     * @param {number} [start=0] the start dataIndex that travel from.
+     * @param {number} [end=data.count()] the next dataIndex of the last dataIndex will be travel.
      */
-    eachActiveState: function (data, callback, context) {
-        var dimensions = this.dimensions;
+    eachActiveState: function (data, callback, start, end) {
+        start == null && (start = 0);
+        end == null && (end = data.count());
+
         var axesMap = this._axesMap;
+        var dimensions = this.dimensions;
+        var dataDimensions = [];
+        var axisModels = [];
+
+        zrUtil.each(dimensions, function (axisDim) {
+            dataDimensions.push(data.mapDimension(axisDim));
+            axisModels.push(axesMap.get(axisDim).model);
+        });
+
         var hasActiveSet = this.hasAxisBrushed();
 
-        for (var i = 0, len = data.count(); i < len; i++) {
-            var values = data.getValues(dimensions, i);
+        for (var dataIndex = start; dataIndex < end; dataIndex++) {
             var activeState;
 
             if (!hasActiveSet) {
@@ -351,9 +362,9 @@ Parallel.prototype = {
             }
             else {
                 activeState = 'active';
+                var values = data.getValues(dataDimensions, dataIndex);
                 for (var j = 0, lenj = dimensions.length; j < lenj; j++) {
-                    var dimName = dimensions[j];
-                    var state = axesMap.get(dimName).model.getActiveState(values[j], j);
+                    var state = axisModels[j].getActiveState(values[j]);
 
                     if (state === 'inactive') {
                         activeState = 'inactive';
@@ -362,7 +373,7 @@ Parallel.prototype = {
                 }
             }
 
-            callback.call(context, activeState, i);
+            callback(activeState, dataIndex);
         }
     },
 

@@ -42,7 +42,7 @@ function rotateTextRect(textRect, rotate) {
 
 function getLabelUnionRect(axis) {
     var axisModel = axis.model;
-    var labels = axisModel.getFormattedLabels();
+    var labels = axisModel.get('axisLabel.show') ? axisModel.getFormattedLabels() : [];
     var axisLabelModel = axisModel.getModel('axisLabel');
     var rect;
     var step = 1;
@@ -127,44 +127,45 @@ gridProto.update = function (ecModel, api) {
 };
 
 function fixAxisOnZero(axesMap, otherAxisDim, axis) {
+
+    axis.getAxesOnZeroOf = function () {
+        // TODO: onZero of multiple axes.
+        return otherAxis ? [otherAxis] : [];
+    };
+
     // onZero can not be enabled in these two situations:
     // 1. When any other axis is a category axis.
     // 2. When no axis is cross 0 point.
-    var axes = axesMap[otherAxisDim];
+    var otherAxes = axesMap[otherAxisDim];
 
-    if (!axis.onZero) {
+    var otherAxis;
+    var axisModel = axis.model;
+    var onZero = axisModel.get('axisLine.onZero');
+    var onZeroAxisIndex = axisModel.get('axisLine.onZeroAxisIndex');
+
+    if (!onZero) {
         return;
     }
-
-    var onZeroAxisIndex = axis.onZeroAxisIndex;
 
     // If target axis is specified.
     if (onZeroAxisIndex != null) {
-        var otherAxis = axes[onZeroAxisIndex];
-        if (otherAxis && canNotOnZeroToAxis(otherAxis)) {
-            axis.onZero = false;
+        if (canOnZeroToAxis(otherAxes[onZeroAxisIndex])) {
+            otherAxis = otherAxes[onZeroAxisIndex];
         }
         return;
     }
 
-    for (var idx in axes) {
-        if (axes.hasOwnProperty(idx)) {
-            var otherAxis = axes[idx];
-            if (otherAxis && !canNotOnZeroToAxis(otherAxis)) {
-                onZeroAxisIndex = +idx;
-                break;
-            }
+    // Find the first available other axis.
+    for (var idx in otherAxes) {
+        if (otherAxes.hasOwnProperty(idx) && canOnZeroToAxis(otherAxes[idx])) {
+            otherAxis = otherAxes[idx];
+            break;
         }
     }
-
-    if (onZeroAxisIndex == null) {
-        axis.onZero = false;
-    }
-    axis.onZeroAxisIndex = onZeroAxisIndex;
 }
 
-function canNotOnZeroToAxis(axis) {
-    return axis.type === 'category' || axis.type === 'time' || !ifAxisCrossZero(axis);
+function canOnZeroToAxis(axis) {
+    return axis && axis.type !== 'category' && axis.type !== 'time' && ifAxisCrossZero(axis);
 }
 
 /**
@@ -214,7 +215,7 @@ gridProto.resize = function (gridModel, api, ignoreContainLabel) {
             var extent = isHorizontal ? [0, gridRect.width] : [0, gridRect.height];
             var idx = axis.inverse ? 1 : 0;
             axis.setExtent(extent[idx], extent[1 - idx]);
-            updateAxisTransfrom(axis, isHorizontal ? gridRect.x : gridRect.y);
+            updateAxisTransform(axis, isHorizontal ? gridRect.x : gridRect.y);
         });
     }
 };
@@ -447,9 +448,6 @@ gridProto._initCartesian = function (gridModel, ecModel, api) {
             axis.onBand = isCategory && axisModel.get('boundaryGap');
             axis.inverse = axisModel.get('inverse');
 
-            axis.onZero = axisModel.get('axisLine.onZero');
-            axis.onZeroAxisIndex = axisModel.get('axisLine.onZeroAxisIndex');
-
             // Inject axis into axisModel
             axisModel.axis = axis;
 
@@ -488,7 +486,7 @@ gridProto._updateScale = function (ecModel, gridModel) {
 
             if (!isAxisUsedInTheGrid(xAxisModel, gridModel, ecModel)
                 || !isAxisUsedInTheGrid(yAxisModel, gridModel, ecModel)
-                ) {
+            ) {
                 return;
             }
 
@@ -507,7 +505,7 @@ gridProto._updateScale = function (ecModel, gridModel) {
     }, this);
 
     function unionExtent(data, axis, seriesModel) {
-        each(seriesModel.coordDimToDataDim(axis.dim), function (dim) {
+        each(data.mapDimension(axis.dim, true), function (dim) {
             axis.scale.unionExtentFromData(data, dim);
         });
     }
@@ -535,7 +533,7 @@ gridProto.getTooltipAxes = function (dim) {
 /**
  * @inner
  */
-function updateAxisTransfrom(axis, coordBase) {
+function updateAxisTransform(axis, coordBase) {
     var axisExtent = axis.getExtent();
     var axisExtentSum = axisExtent[0] + axisExtent[1];
 

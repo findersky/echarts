@@ -45,7 +45,17 @@ export default MarkerView.extend({
 
     type: 'markPoint',
 
-    updateLayout: function (markPointModel, ecModel, api) {
+    // updateLayout: function (markPointModel, ecModel, api) {
+    //     ecModel.eachSeries(function (seriesModel) {
+    //         var mpModel = seriesModel.markPointModel;
+    //         if (mpModel) {
+    //             updateMarkerLayout(mpModel.getData(), seriesModel, api);
+    //             this.markerGroupMap.get(seriesModel.id).updateLayout(mpModel);
+    //         }
+    //     }, this);
+    // },
+
+    updateTransform: function (markPointModel, ecModel, api) {
         ecModel.eachSeries(function (seriesModel) {
             var mpModel = seriesModel.markPointModel;
             if (mpModel) {
@@ -82,7 +92,7 @@ export default MarkerView.extend({
             }
             mpData.setItemVisual(idx, {
                 symbolSize: symbolSize,
-                color: itemModel.get('itemStyle.normal.color')
+                color: itemModel.get('itemStyle.color')
                     || seriesData.getVisual('color'),
                 symbol: itemModel.getShallow('symbol')
             });
@@ -117,10 +127,10 @@ function createList(coordSys, seriesModel, mpModel) {
     if (coordSys) {
         coordDimsInfos = zrUtil.map(coordSys && coordSys.dimensions, function (coordDim) {
             var info = seriesModel.getData().getDimensionInfo(
-                seriesModel.coordDimToDataDim(coordDim)[0]
-            ) || {}; // In map series data don't have lng and lat dimension. Fallback to same with coordSys
-            info.name = coordDim;
-            return info;
+                seriesModel.getData().mapDimension(coordDim)
+            ) || {};
+            // In map series data don't have lng and lat dimension. Fallback to same with coordSys
+            return zrUtil.defaults({name: coordDim}, info);
         });
     }
     else {

@@ -35,13 +35,22 @@ export function toCamelCase(str, upperCaseFirst) {
 
 export var normalizeCssArray = zrUtil.normalizeCssArray;
 
+
+var replaceReg = /([&<>"'])/g;
+var replaceMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#39;',
+};
+
 export function encodeHTML(source) {
-    return String(source)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    return source == null
+        ? ''
+        : (source + '').replace(replaceReg, function (str, char) {
+            return replaceMap[char];
+        });
 }
 
 var TPL_VAR_ALIAS = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
@@ -69,8 +78,7 @@ export function formatTpl(tpl, paramsList, encode) {
     var $vars = paramsList[0].$vars || [];
     for (var i = 0; i < $vars.length; i++) {
         var alias = TPL_VAR_ALIAS[i];
-        var val = wrapVar(alias, 0);
-        tpl = tpl.replace(wrapVar(alias), encode ? encodeHTML(val) : val);
+        tpl = tpl.replace(wrapVar(alias), wrapVar(alias, 0));
     }
     for (var seriesIdx = 0; seriesIdx < seriesLen; seriesIdx++) {
         for (var k = 0; k < $vars.length; k++) {
@@ -104,26 +112,36 @@ export function formatTplSimple(tpl, param, encode) {
 }
 
 /**
- * @param {string} color
- * @param {string} [extraCssText]
+ * @param {Object|string} [opt] If string, means color.
+ * @param {string} [opt.color]
+ * @param {string} [opt.extraCssText]
+ * @param {string} [opt.type='item'] 'item' or 'subItem'
  * @return {string}
  */
-export function getTooltipMarker(color, extraCssText) {
-    return color
-        ? '<span style="display:inline-block;margin-right:5px;'
-            + 'border-radius:10px;width:9px;height:9px;background-color:'
+export function getTooltipMarker(opt, extraCssText) {
+    opt = zrUtil.isString(opt) ? {color: opt, extraCssText: extraCssText} : (opt || {});
+    var color = opt.color;
+    var type = opt.type;
+    var extraCssText = opt.extraCssText;
+
+    if (!color) {
+        return '';
+    }
+
+    return type === 'subItem'
+        ? '<span style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;'
+            + 'border-radius:4px;width:4px;height:4px;background-color:'
             + encodeHTML(color) + ';' + (extraCssText || '') + '"></span>'
-        : '';
+        : '<span style="display:inline-block;margin-right:5px;'
+            + 'border-radius:10px;width:10px;height:10px;background-color:'
+            + encodeHTML(color) + ';' + (extraCssText || '') + '"></span>';
 }
 
-/**
- * @param {string} str
- * @return {string}
- * @inner
- */
-var s2d = function (str) {
-    return str < 10 ? ('0' + str) : str;
-};
+function pad(str, len) {
+    str += '';
+    return '0000'.substr(0, len - str.length) + str;
+}
+
 
 /**
  * ISO Date format
@@ -152,19 +170,21 @@ export function formatTime(tpl, value, isUTC) {
     var h = date['get' + utc + 'Hours']();
     var m = date['get' + utc + 'Minutes']();
     var s = date['get' + utc + 'Seconds']();
+    var S = date['get' + utc + 'Milliseconds']();
 
-    tpl = tpl.replace('MM', s2d(M))
+    tpl = tpl.replace('MM', pad(M, 2))
         .replace('M', M)
         .replace('yyyy', y)
         .replace('yy', y % 100)
-        .replace('dd', s2d(d))
+        .replace('dd', pad(d, 2))
         .replace('d', d)
-        .replace('hh', s2d(h))
+        .replace('hh', pad(h, 2))
         .replace('h', h)
-        .replace('mm', s2d(m))
+        .replace('mm', pad(m, 2))
         .replace('m', m)
-        .replace('ss', s2d(s))
-        .replace('s', s);
+        .replace('ss', pad(s, 2))
+        .replace('s', s)
+        .replace('SSS', pad(S, 3));
 
     return tpl;
 }

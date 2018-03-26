@@ -15,7 +15,7 @@ export default SeriesModel.extend({
                 throw new Error('Line not support coordinateSystem besides cartesian and polar');
             }
         }
-        return createListFromArray(option.data, this, ecModel);
+        return createListFromArray(this.getSource(), this);
     },
 
     defaultOption: {
@@ -36,21 +36,22 @@ export default SeriesModel.extend({
         // cursor: null,
 
         label: {
-            normal: {
-                position: 'top'
-            }
+            position: 'top'
         },
         // itemStyle: {
-        //     normal: {},
-        //     emphasis: {}
         // },
+
         lineStyle: {
-            normal: {
-                width: 2,
-                type: 'solid'
-            }
+            width: 2,
+            type: 'solid'
         },
-        // areaStyle: {origin: 'auto'},
+        // areaStyle: {
+            // origin of areaStyle. Valid values:
+            // `'auto'/null/undefined`: from axisLine to data
+            // `'start'`: from min to data
+            // `'end'`: from data to max
+            // origin: 'auto'
+        // },
         // false, 'start', 'end', 'middle'
         step: false,
 

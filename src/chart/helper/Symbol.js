@@ -6,7 +6,7 @@ import * as zrUtil from 'zrender/src/core/util';
 import {createSymbol} from '../../util/symbol';
 import * as graphic from '../../util/graphic';
 import {parsePercent} from '../../util/number';
-import {findLabelValueDim} from './labelHelper';
+import {getDefaultLabel} from './labelHelper';
 
 
 function getSymbolSize(data, idx) {
@@ -29,7 +29,6 @@ function getScale(symbolSize) {
  */
 function SymbolClz(data, idx, seriesScope) {
     graphic.Group.call(this);
-
     this.updateData(data, idx, seriesScope);
 }
 
@@ -39,7 +38,13 @@ function driftSymbol(dx, dy) {
     this.parent.drift(dx, dy);
 }
 
-symbolProto._createSymbol = function (symbolType, data, idx, symbolSize) {
+symbolProto._createSymbol = function (
+    symbolType,
+    data,
+    idx,
+    symbolSize,
+    keepAspect
+) {
     // Remove paths created before
     this.removeAll();
 
@@ -52,7 +57,7 @@ symbolProto._createSymbol = function (symbolType, data, idx, symbolSize) {
     // and macOS Sierra, a circle stroke become a rect, no matter what
     // the scale is set. So we set width/height as 2. See #4150.
     var symbolPath = createSymbol(
-        symbolType, -1, -1, 2, 2, color
+        symbolType, -1, -1, 2, 2, color, keepAspect
     );
 
     symbolPath.attr({
@@ -153,7 +158,8 @@ symbolProto.updateData = function (data, idx, seriesScope) {
     var isInit = symbolType !== this._symbolType;
 
     if (isInit) {
-        this._createSymbol(symbolType, data, idx, symbolSize);
+        var keepAspect = data.getItemVisual(idx, 'symbolKeepAspect');
+        this._createSymbol(symbolType, data, idx, symbolSize, keepAspect);
     }
     else {
         var symbolPath = this.childAt(0);
@@ -182,10 +188,10 @@ symbolProto.updateData = function (data, idx, seriesScope) {
 };
 
 // Update common properties
-var normalStyleAccessPath = ['itemStyle', 'normal'];
-var emphasisStyleAccessPath = ['itemStyle', 'emphasis'];
-var normalLabelAccessPath = ['label', 'normal'];
-var emphasisLabelAccessPath = ['label', 'emphasis'];
+var normalStyleAccessPath = ['itemStyle'];
+var emphasisStyleAccessPath = ['emphasis', 'itemStyle'];
+var normalLabelAccessPath = ['label'];
+var emphasisLabelAccessPath = ['emphasis', 'label'];
 
 /**
  * @param {module:echarts/data/List} data
@@ -259,19 +265,21 @@ symbolProto._updateCommon = function (data, idx, symbolSize, seriesScope) {
     }
 
     var useNameLabel = seriesScope && seriesScope.useNameLabel;
-    var valueDim = !useNameLabel && findLabelValueDim(data);
 
-    if (useNameLabel || valueDim != null) {
-        graphic.setLabelStyle(
-            elStyle, hoverItemStyle, labelModel, hoverLabelModel,
-            {
-                labelFetcher: seriesModel,
-                labelDataIndex: idx,
-                defaultText: useNameLabel ? data.getName(idx) : data.get(valueDim, idx),
-                isRectText: true,
-                autoColor: color
-            }
-        );
+    graphic.setLabelStyle(
+        elStyle, hoverItemStyle, labelModel, hoverLabelModel,
+        {
+            labelFetcher: seriesModel,
+            labelDataIndex: idx,
+            defaultText: getLabelDefaultText,
+            isRectText: true,
+            autoColor: color
+        }
+    );
+
+    // Do not execute util needed.
+    function getLabelDefaultText(idx, opt) {
+        return useNameLabel ? data.getName(idx) : getDefaultLabel(data, idx);
     }
 
     symbolPath.off('mouseover')
@@ -289,6 +297,11 @@ symbolProto._updateCommon = function (data, idx, symbolSize, seriesScope) {
 
     if (hoverAnimation && seriesModel.isAnimationEnabled()) {
         var onEmphasis = function() {
+            // Do not support this hover animation util some scenario required.
+            // Animation can only be supported in hover layer when using `el.incremetal`.
+            if (this.incremental) {
+                return;
+            }
             var ratio = scale[1] / scale[0];
             this.animateTo({
                 scale: [
@@ -298,6 +311,9 @@ symbolProto._updateCommon = function (data, idx, symbolSize, seriesScope) {
             }, 400, 'elasticOut');
         };
         var onNormal = function() {
+            if (this.incremental) {
+                return;
+            }
             this.animateTo({
                 scale: scale
             }, 400, 'elasticOut');

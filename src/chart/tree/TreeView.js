@@ -57,8 +57,8 @@ export default echarts.extendChartView({
         var seriesScope = {
             expandAndCollapse: seriesModel.get('expandAndCollapse'),
             layout: layout,
-            orient: seriesModel.get('orient'),
-            curvature: seriesModel.get('lineStyle.normal.curveness'),
+            orient: seriesModel.getOrient(),
+            curvature: seriesModel.get('lineStyle.curveness'),
             symbolRotate: seriesModel.get('symbolRotate'),
             symbolOffset: seriesModel.get('symbolOffset'),
             hoverAnimation: seriesModel.get('hoverAnimation'),
@@ -122,11 +122,11 @@ function symbolNeedsDraw(data, dataIndex) {
 
 function getTreeNodeStyle(node, itemModel, seriesScope) {
     seriesScope.itemModel = itemModel;
-    seriesScope.itemStyle = itemModel.getModel('itemStyle.normal').getItemStyle();
-    seriesScope.hoverItemStyle = itemModel.getModel('itemStyle.emphasis').getItemStyle();
-    seriesScope.lineStyle = itemModel.getModel('lineStyle.normal').getLineStyle();
-    seriesScope.labelModel = itemModel.getModel('label.normal');
-    seriesScope.hoverLabelModel = itemModel.getModel('label.emphasis');
+    seriesScope.itemStyle = itemModel.getModel('itemStyle').getItemStyle();
+    seriesScope.hoverItemStyle = itemModel.getModel('emphasis.itemStyle').getItemStyle();
+    seriesScope.lineStyle = itemModel.getModel('lineStyle').getLineStyle();
+    seriesScope.labelModel = itemModel.getModel('label');
+    seriesScope.hoverLabelModel = itemModel.getModel('emphasis.label');
 
     if (node.isExpand === false && node.children.length !== 0) {
         seriesScope.symbolInnerColor = seriesScope.itemStyle.fill;
@@ -314,13 +314,13 @@ function getEdgeShape(seriesScope, sourceLayout, targetLayout) {
         var x2 = targetLayout.x;
         var y2 = targetLayout.y;
 
-        if (orient === 'horizontal') {
+        if (orient === 'LR' || orient === 'RL') {
             cpx1 = x1 + (x2 - x1) * seriesScope.curvature;
             cpy1 = y1;
             cpx2 = x2 + (x1 - x2) * seriesScope.curvature;
             cpy2 = y2;
         }
-        if (orient === 'vertical') {
+        if (orient === 'TB' || orient === 'BT') {
             cpx1 = x1;
             cpy1 = y1 + (y2 - y1) * seriesScope.curvature;
             cpx2 = x2;

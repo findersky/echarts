@@ -12,9 +12,9 @@ export default function (ecModel) {
             points[idx] = points[idx] || [];
             points[idx][i] = coordSys.dataToPoint(val, i);
         }
-        for (var i = 0; i < coordSys.getIndicatorAxes().length; i++) {
-            var dim = data.dimensions[i];
-            data.each(dim, pointsConverter);
+        var axes = coordSys.getIndicatorAxes();
+        for (var i = 0; i < axes.length; i++) {
+            data.each(data.mapDimension(axes[i].dim), pointsConverter);
         }
 
         data.each(function (idx) {

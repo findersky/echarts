@@ -8,8 +8,14 @@ import * as zrUtil from 'zrender/src/core/util';
 
 export default {
 
+    /**
+     * @param {Array.<Object>} targetList [{name, value, selected}, ...]
+     *        If targetList is an array, it should like [{name: ..., value: ...}, ...].
+     *        If targetList is a "List", it must have coordDim: 'value' dimension and name.
+     */
     updateSelectedMap: function (targetList) {
-        this._targetList = targetList.slice();
+        this._targetList = zrUtil.isArray(targetList) ? targetList.slice() : [];
+
         this._selectTargetMap = zrUtil.reduce(targetList || [], function (targetMap, target) {
             targetMap.set(target.name, target);
             return targetMap;

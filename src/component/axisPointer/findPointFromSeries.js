@@ -18,7 +18,7 @@ export default function (finder, ecModel) {
 
     var data = seriesModel.getData();
     var dataIndex = modelUtil.queryDataIndex(data, finder);
-    if (dataIndex == null || zrUtil.isArray(dataIndex)) {
+    if (dataIndex == null || dataIndex < 0 || zrUtil.isArray(dataIndex)) {
         return {point: []};
     }
 
@@ -32,7 +32,7 @@ export default function (finder, ecModel) {
         point = coordSys.dataToPoint(
             data.getValues(
                 zrUtil.map(coordSys.dimensions, function (dim) {
-                    return seriesModel.coordDimToDataDim(dim)[0];
+                    return data.mapDimension(dim);
                 }), dataIndex, true
             )
         ) || [];

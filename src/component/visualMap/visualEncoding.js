@@ -3,32 +3,33 @@ import * as zrUtil from 'zrender/src/core/util';
 import * as visualSolution from '../../visual/visualSolution';
 import VisualMapping from '../../visual/VisualMapping';
 
-echarts.registerVisual(echarts.PRIORITY.VISUAL.COMPONENT, function (ecModel) {
-    ecModel.eachComponent('visualMap', function (visualMapModel) {
-        processSingleVisualMap(visualMapModel, ecModel);
-    });
+var VISUAL_PRIORITY = echarts.PRIORITY.VISUAL.COMPONENT;
 
-    prepareVisualMeta(ecModel);
+echarts.registerVisual(VISUAL_PRIORITY, {
+    createOnAllSeries: true,
+    reset: function (seriesModel, ecModel) {
+        var resetDefines = [];
+        ecModel.eachComponent('visualMap', function (visualMapModel) {
+            if (!visualMapModel.isTargetSeries(seriesModel)) {
+                return;
+            }
+
+            resetDefines.push(visualSolution.incrementalApplyVisual(
+                visualMapModel.stateList,
+                visualMapModel.targetVisuals,
+                zrUtil.bind(visualMapModel.getValueState, visualMapModel),
+                visualMapModel.getDataDimension(seriesModel.getData())
+            ));
+        });
+
+        return resetDefines;
+    }
 });
 
-function processSingleVisualMap(visualMapModel, ecModel) {
-    visualMapModel.eachTargetSeries(function (seriesModel) {
-        var data = seriesModel.getData();
-
-        visualSolution.applyVisual(
-            visualMapModel.stateList,
-            visualMapModel.targetVisuals,
-            data,
-            visualMapModel.getValueState,
-            visualMapModel,
-            visualMapModel.getDataDimension(data)
-        );
-    });
-}
-
 // Only support color.
-function prepareVisualMeta(ecModel) {
-    ecModel.eachSeries(function (seriesModel) {
+echarts.registerVisual(VISUAL_PRIORITY, {
+    createOnAllSeries: true,
+    reset: function (seriesModel, ecModel) {
         var data = seriesModel.getData();
         var visualMetaList = [];
 
@@ -37,15 +38,21 @@ function prepareVisualMeta(ecModel) {
                 var visualMeta = visualMapModel.getVisualMeta(
                     zrUtil.bind(getColorVisual, null, seriesModel, visualMapModel)
                 ) || {stops: [], outerColors: []};
-                visualMeta.dimension = visualMapModel.getDataDimension(data);
-                visualMetaList.push(visualMeta);
+
+                var concreteDim = visualMapModel.getDataDimension(data);
+                var dimInfo = data.getDimensionInfo(concreteDim);
+                if (dimInfo != null) {
+                    // visualMeta.dimension should be dimension index, but not concrete dimension.
+                    visualMeta.dimension = dimInfo.index;
+                    visualMetaList.push(visualMeta);
+                }
             }
         });
 
         // console.log(JSON.stringify(visualMetaList.map(a => a.stops)));
         seriesModel.getData().setVisual('visualMeta', visualMetaList);
-    });
-}
+    }
+});
 
 // FIXME
 // performance and export for heatmap?

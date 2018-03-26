@@ -5,6 +5,8 @@ import {
     getLayoutParams,
     mergeLayoutParam
 } from '../util/layout';
+import OrdinalMeta from '../data/OrdinalMeta';
+
 
 // FIXME axisType is fixed ?
 var AXIS_TYPES = ['value', 'category', 'time', 'log'];
@@ -22,6 +24,9 @@ export default function (axisName, BaseAxisModelClass, axisTypeDefaulter, extraD
 
         BaseAxisModelClass.extend({
 
+            /**
+             * @readOnly
+             */
             type: axisName + 'Axis.' + axisType,
 
             mergeDefaultAndTheme: function (option, ecModel) {
@@ -38,6 +43,36 @@ export default function (axisName, BaseAxisModelClass, axisTypeDefaulter, extraD
                 if (layoutMode) {
                     mergeLayoutParam(option, inputPositionParams, layoutMode);
                 }
+            },
+
+            /**
+             * @override
+             */
+            optionUpdated: function () {
+                var thisOption = this.option;
+                if (thisOption.type === 'category') {
+                    this.__ordinalMeta = OrdinalMeta.createByAxisModel(this);
+                }
+            },
+
+            /**
+             * Should not be called before all of 'getInitailData' finished.
+             * Because categories are collected during initializing data.
+             */
+            getCategories: function (rawData) {
+                var option = this.option;
+                // FIXME
+                // warning if called before all of 'getInitailData' finished.
+                if (option.type === 'category') {
+                    if (rawData) {
+                        return option.data;
+                    }
+                    return this.__ordinalMeta.categories;
+                }
+            },
+
+            getOrdinalMeta: function () {
+                return this.__ordinalMeta;
             },
 
             defaultOption: zrUtil.mergeAll(

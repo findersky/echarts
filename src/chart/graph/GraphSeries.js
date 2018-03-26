@@ -33,7 +33,7 @@ var GraphSeries = echarts.extendSeriesModel({
 
     mergeDefaultAndTheme: function (option) {
         GraphSeries.superApply(this, 'mergeDefaultAndTheme', arguments);
-        defaultEmphasis(option.edgeLabel, ['show']);
+        defaultEmphasis(option, ['edgeLabel'], ['show']);
     },
 
     getInitialData: function (option, ecModel) {
@@ -65,6 +65,12 @@ var GraphSeries = echarts.extendSeriesModel({
                 edgeLabelModel.parentModel,
                 ecModel
             );
+            var emphasisEdgeLabelModel = self.getModel('emphasis.edgeLabel');
+            var emphasisFakeSeriesModel = new Model(
+                {emphasis: {label: emphasisEdgeLabelModel.option}},
+                emphasisEdgeLabelModel.parentModel,
+                ecModel
+            );
 
             edgeData.wrapMethod('getItemModel', function (model) {
                 model.customizeGetParent(edgeGetParent);
@@ -75,6 +81,8 @@ var GraphSeries = echarts.extendSeriesModel({
                 path = this.parsePath(path);
                 return (path && path[0] === 'label')
                     ? fakeSeriesModel
+                    : (path && path[0] === 'emphasis' && path[1] === 'label')
+                    ? emphasisFakeSeriesModel
                     : this.parentModel;
             }
         }
@@ -208,10 +216,7 @@ var GraphSeries = echarts.extendSeriesModel({
         edgeSymbol: ['none', 'none'],
         edgeSymbolSize: 10,
         edgeLabel: {
-            normal: {
-                position: 'middle'
-            },
-            emphasis: {}
+            position: 'middle'
         },
 
         draggable: false,
@@ -237,28 +242,22 @@ var GraphSeries = echarts.extendSeriesModel({
         // edges: []
 
         label: {
-            normal: {
-                show: false,
-                formatter: '{b}'
-            },
-            emphasis: {
-                show: true
-            }
+            show: false,
+            formatter: '{b}'
         },
 
-        itemStyle: {
-            normal: {},
-            emphasis: {}
-        },
+        itemStyle: {},
 
         lineStyle: {
-            normal: {
-                color: '#aaa',
-                width: 1,
-                curveness: 0,
-                opacity: 0.5
-            },
-            emphasis: {}
+            color: '#aaa',
+            width: 1,
+            curveness: 0,
+            opacity: 0.5
+        },
+        emphasis: {
+            label: {
+                show: true
+            }
         }
     }
 });

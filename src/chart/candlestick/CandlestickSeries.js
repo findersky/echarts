@@ -1,6 +1,7 @@
 import * as zrUtil from 'zrender/src/core/util';
 import SeriesModel from '../../model/Series';
 import {seriesModelMixin} from '../helper/whiskerBoxCommon';
+// import {calculateCandleWidth} from './helper';
 
 var CandlestickSeries = SeriesModel.extend({
 
@@ -36,16 +37,17 @@ var CandlestickSeries = SeriesModel.extend({
         layout: null, // 'horizontal' or 'vertical'
 
         itemStyle: {
-            normal: {
-                color: '#c23531', // 阳线 positive
-                color0: '#314656', // 阴线 negative     '#c23531', '#314656'
-                borderWidth: 1,
-                // FIXME
-                // ec2中使用的是lineStyle.color 和 lineStyle.color0
-                borderColor: '#c23531',
-                borderColor0: '#314656'
-            },
-            emphasis: {
+            color: '#c23531', // 阳线 positive
+            color0: '#314656', // 阴线 negative     '#c23531', '#314656'
+            borderWidth: 1,
+            // FIXME
+            // ec2中使用的是lineStyle.color 和 lineStyle.color0
+            borderColor: '#c23531',
+            borderColor0: '#314656'
+        },
+
+        emphasis: {
+            itemStyle: {
                 borderWidth: 2
             }
         },
@@ -53,6 +55,9 @@ var CandlestickSeries = SeriesModel.extend({
         barMaxWidth: null,
         barMinWidth: null,
         barWidth: null,
+
+        large: true,
+        largeThreshold: 500,
 
         animationUpdate: false,
         animationEasing: 'linear',
@@ -69,8 +74,13 @@ var CandlestickSeries = SeriesModel.extend({
 
     brushSelector: function (dataIndex, data, selectors) {
         var itemLayout = data.getItemLayout(dataIndex);
-        return selectors.rect(itemLayout.brushRect);
+        return itemLayout && selectors.rect(itemLayout.brushRect);
     }
+
+    // isLargeMode: function (data) {
+    //     // Experience number
+    //     return calculateCandleWidth(this, data) <= 1;
+    // }
 
 });
 

@@ -16,6 +16,8 @@ var _export = require("./lib/export");
   }
 })();
 
+require("./lib/component/dataset");
+
 require("./lib/chart/line");
 
 require("./lib/chart/bar");
@@ -55,6 +57,8 @@ require("./lib/chart/heatmap");
 require("./lib/chart/pictorialBar");
 
 require("./lib/chart/themeRiver");
+
+require("./lib/chart/sunburst");
 
 require("./lib/chart/custom");
 

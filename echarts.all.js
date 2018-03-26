@@ -1,6 +1,8 @@
 export * from './src/echarts';
 export * from './src/export';
 
+import './src/component/dataset';
+
 // Import all charts and components
 import './src/chart/line';
 import './src/chart/bar';
@@ -23,6 +25,7 @@ import './src/chart/lines';
 import './src/chart/heatmap';
 import './src/chart/pictorialBar';
 import './src/chart/themeRiver';
+import './src/chart/sunburst';
 import './src/chart/custom';
 
 import './src/component/graphic';
