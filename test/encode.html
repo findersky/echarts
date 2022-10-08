@@ -1,7 +1,27 @@
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="lib/esl.js"></script>
+        <script src="lib/simpleRequire.js"></script>
         <script src="lib/config.js"></script>
         <script src="lib/testHelper.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -30,6 +50,8 @@
         <h1>define which dim on x or y. encode: {x: 2, y: 1, label: 4}</h1>
         <div class="chart" id="dimXY"></div>
 
+        <div class="chart" id="ignoreX"></div>
+
 
 
 
@@ -38,13 +60,7 @@
 
             require([
                 'echarts',
-                'data/security-sh-2013.json'
-                // 'echarts/chart/line',
-                // 'echarts/chart/candlestick',
-                // 'echarts/component/legend',
-                // 'echarts/component/grid',
-                // 'echarts/component/tooltip',
-                // 'zrender/vml/vml'
+                'data/security-sh-2013.json.js'
             ], function (echarts, rawData) {
 
                 var dom = document.getElementById('dim');
@@ -155,18 +171,8 @@
             var data;
 
             require([
-                'echarts',
-                'extension/dataTool'
-                // 'echarts/chart/boxplot',
-                // 'echarts/chart/scatter',
-                // 'echarts/component/title',
-                // 'echarts/component/legend',
-                // 'echarts/component/grid',
-                // 'echarts/component/tooltip',
-                // 'echarts/component/dataZoom'
-            ], function (echarts, dataTool) {
-
-                var prepareBoxplotData = dataTool.prepareBoxplotData;
+                'echarts'
+            ], function (echarts) {
 
                 data = [];
                 for (var seriesIndex = 0; seriesIndex < 5; seriesIndex++) {
@@ -178,7 +184,7 @@
                         }
                         seriesData.push(cate);
                     }
-                    data.push(prepareBoxplotData(seriesData, {layout: 'horizontal'}));
+                    data.push(seriesData);
                 }
 
                 var option = {
@@ -243,6 +249,19 @@
                             end: 20
                         }
                     ],
+                    dataset: [{
+                        source: data[0]
+                    }, {
+                        source: data[1]
+                    }, {
+                        transform: {
+                            type: 'boxplot'
+                        }
+                    }, {
+                        transform: {
+                            type: 'boxplot'
+                        }
+                    }],
                     series: [
                         {
                             name: 'category0',
@@ -251,12 +270,12 @@
                             encode: {
                                 tooltip: [3, 2, 4]
                             },
-                            data: data[0].boxData
+                            datasetIndex: 2
                         },
                         {
                             name: 'category1',
                             type: 'boxplot',
-                            data: data[1].boxData
+                            datasetIndex: 3
                         }
                     ]
                 };
@@ -276,11 +295,6 @@
         <script>
             require([
                 'echarts'
-                // 'echarts/chart/scatter',
-                // 'echarts/component/legend',
-                // 'echarts/component/visualMap',
-                // 'echarts/component/dataZoom',
-                // 'zrender/vml/vml'
             ], function (echarts) {
                 data = [
                     ['Blouse "Blue Viola"', 101.88, 99.75, 23, 17, 32, 18],
@@ -351,6 +365,112 @@
 
                 testHelper.createChart(echarts, 'dimXY', option);
             });
+        </script>
+
+
+
+
+
+
+        <script>
+
+            var chart;
+            var myChart;
+            var option;
+
+            require([
+                'echarts'/*, 'map/js/china' */
+            ], function (echarts) {
+
+                var option = {
+                    title: {
+                        text: 'deafault (filter)'
+                    },
+                    xAxis: {},
+                    yAxis: {},
+                    dataZoom: [{
+                        type: 'inside',
+                        xAxisIndex: 0
+                    }, {
+                        type: 'slider',
+                        xAxisIndex: 0
+                    }, {
+                        type: 'inside',
+                        yAxisIndex: 0
+                    }, {
+                        type: 'slider',
+                        yAxisIndex: 0
+                    }],
+                    series: [{
+                        type: 'custom',
+                        renderItem: function (params, api) {
+                            var y = api.coord([0, api.value(0)])[1];
+                            var x = 100;
+                            return {
+                                type: 'circle',
+                                shape: {
+                                    cx: x,
+                                    cy: y,
+                                    r: 30
+                                },
+                                style: {
+                                    fill: 'blue'
+                                }
+                            };
+                        },
+                        encode: {
+                            x: -1,
+                            y: 0
+                        },
+                        data: [
+                            [122, null],
+                            [333, null]
+                        ]
+                    }, {
+                        type: 'scatter',
+                        data: [[21, 43], [55, 66]]
+                    }]
+                };
+
+                chart = myChart = testHelper.create(echarts, 'ignoreX', {
+                    option: option,
+                    title: [
+                        'series not controlled by xAxis but only by yAxis',
+                        'x axis can not filter blue circle, but y axis can do'
+                    ],
+                    info: option.series[0].encode,
+                    buttons: [{
+                        text: 'filterMode: weakFilter',
+                        onclick: function () {
+                            option.dataZoom[0].filterMode = option.dataZoom[1].filterMode = 'weakFilter';
+                            option.title.text = 'filterMode: weakFilter';
+                            chart.setOption(option, true);
+                        }
+                    }, {
+                        text: 'filterMode: deafault (filter)',
+                        onclick: function () {
+                            option.dataZoom[0].filterMode = option.dataZoom[1].filterMode = void 0;
+                            option.title.text = 'deafault (filter)'
+                            chart.setOption(option, true);
+                        }
+                    }, {
+                        text: 'filterMode: empty',
+                        onclick: function () {
+                            option.dataZoom[0].filterMode = option.dataZoom[1].filterMode = 'empty';
+                            option.title.text = 'filterMode: empty';
+                            chart.setOption(option, true);
+                        }
+                    }, {
+                        text: 'filterMode: none',
+                        onclick: function () {
+                            option.dataZoom[0].filterMode = option.dataZoom[1].filterMode = 'none'
+                            option.title.text = 'filterMode: none';
+                            chart.setOption(option, true);
+                        }
+                    }]
+                });
+            });
+
         </script>
 
 

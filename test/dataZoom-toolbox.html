@@ -1,11 +1,32 @@
-<!DOCTYPE>
+<!DOCTYPE html>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="lib/esl.js"></script>
+        <script src="lib/simpleRequire.js"></script>
         <script src="lib/config.js"></script>
         <script src="lib/jquery.min.js"></script>
         <script src="lib/facePrint.js"></script>
+        <script src="lib/testHelper.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="lib/reset.css">
     </head>
@@ -38,6 +59,9 @@
         <h2>Specify Y axis (yAxisIndex: false, should be 'lineX' brush)</h2>
         <div class="chart" id="main-specify-x-axis"></div>
 
+        <div id="main0"></div>
+        <div id="main-refer-by-axis-id"></div>
+
         <script>
 
             var lastChart;
@@ -46,17 +70,6 @@
             function makeChart(id, option, cb) {
                 require([
                     'echarts'
-                    // 'echarts/model/globalDefault',
-                    // 'echarts/chart/scatter',
-                    // 'echarts/chart/line',
-                    // 'echarts/chart/bar',
-                    // 'echarts/chart/scatter',
-                    // 'echarts/component/grid',
-                    // 'echarts/component/markLine',
-                    // 'echarts/component/legend',
-                    // 'echarts/component/tooltip',
-                    // 'echarts/component/toolbox',
-                    // 'echarts/component/dataZoom'
                 ], function (echarts, globalDefault) {
                     var main = document.getElementById(id);
                     if (main) {
@@ -122,7 +135,13 @@
                         dataView: {},
                         dataZoom: {
                             show: true,
-                            yAxisIndex: null
+                            yAxisIndex: null,
+                            // brushStyle: {
+                            //     borderWidth: 2,
+                            //     color: 'blue',
+                            //     opacity: 0.1,
+                            //     borderColor: '#596A76',
+                            // }
                         },
                         restore: {show: true},
                         saveAsImage: {}
@@ -661,6 +680,139 @@
             });
         </script>
 
+
+
+
+
+        <script>
+        require(['echarts'/*, 'map/js/china' */], function (echarts) {
+            var option;
+
+            option = {
+                toolbox: {
+                    feature: {
+                        dataZoom: {
+                            // yAxisIndex: false
+                        }
+                    }
+                },
+                legend: {},
+                xAxis: {
+                    data: ['I', 'II', 'III']
+                },
+                yAxis: {},
+                series: [{
+                    name: 'x',
+                    type: 'bar',
+                    stack: 'a',
+                    data: [11, 22, 33]
+                }, {
+                    name: 'y',
+                    type: 'bar',
+                    stack: 'a',
+                    data: [44, 33, 22]
+                }]
+            };
+
+            var chart = testHelper.create(echarts, 'main0', {
+                title: [
+                    '(1) Use toolbox.dataZoom to brush a small rect in grid.',
+                    '(2) Click a legend item to disappear a series and click again to show the series.',
+                    '[Check]: the extent of yAxis: should be able to return to **the previous state after (1) did**.',
+                    '(3) Click "back" in toolbox.dataZoom',
+                    '[Check]: Back normally.'
+                ],
+                option: option
+                // height: 300,
+                // buttons: [{text: 'btn-txt', onclick: function () {}}],
+                // recordCanvas: true,
+            });
+        });
+        </script>
+
+
+
+
+        <script>
+        require(['echarts'/*, 'map/js/china' */], function (echarts) {
+            var option;
+
+            option = {
+                toolbox: {
+                    feature: {
+                        dataZoom: {
+                            xAxisId: 'xr',
+                            yAxisId: ['yl0', 'yl1']
+                        }
+                    }
+                },
+                legend: {},
+                grid: [{
+                    right: '60%',
+                    bottom: '60%',
+                }, {
+                    id: 'gr',
+                    left: '60%',
+                    bottom: '60%',
+                }, {
+                    id: 'gb',
+                    top: '60%',
+                }],
+                xAxis: [{
+
+                }, {
+                    id: 'xr',
+                    gridId: 'gr'
+                }, {
+                    id: 'xb',
+                    gridId: 'gb'
+                }],
+                yAxis: [{
+                    id: 'yl0'
+                }, {
+                    id: 'yl1'
+                }, {
+                    id: 'yr',
+                    gridId: 'gr'
+                }, {
+                    id: 'yb',
+                    gridId: 'gb'
+                }],
+                series: [{
+                    type: 'line',
+                    yAxisId: 'yl0',
+                    data: [[11, 12], [22, 45], [33, 76]]
+                }, {
+                    type: 'line',
+                    yAxisId: 'yl1',
+                    data: [[11, 2212], [22, 3345], [33, 4476]]
+                }, {
+                    type: 'line',
+                    xAxisId: 'xr',
+                    yAxisId: 'yr',
+                    data: [[45, 65], [13, 25], [56, 71]]
+                }, {
+                    type: 'line',
+                    xAxisId: 'xb',
+                    yAxisId: 'yb',
+                    data: [[123, 654], [234, 321], [345, 812]]
+                }]
+            };
+
+            var chart = testHelper.create(echarts, 'main-refer-by-axis-id', {
+                title: [
+                    'Test toolbox datazoom refer with axis id',
+                    'left grid: toolbox only work **on two yAxis**',
+                    'right grid: toolbox only work **on xAxis**',
+                    'bottom grid: toolbox **does not work**'
+                ],
+                option: option
+                // height: 300,
+                // buttons: [{text: 'btn-txt', onclick: function () {}}],
+                // recordCanvas: true,
+            });
+        });
+        </script>
 
 
 

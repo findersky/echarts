@@ -1,7 +1,27 @@
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="lib/esl.js"></script>
+        <script src="lib/simpleRequire.js"></script>
         <script src="lib/config.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
@@ -32,14 +52,9 @@
 
             require([
                 'echarts'
-                // 'zrender/core/util',
-                // 'echarts/chart/bar',
-                // 'echarts/component/legend',
-                // 'echarts/component/grid',
-                // 'echarts/component/tooltip',
-                // 'echarts/component/timeline'
             ], function (echarts) {
                 var zrUtil = echarts.util;
+
                 makeChart({
                     timeline: {
                         label: {
@@ -58,12 +73,13 @@
                     timeline: {
                         inverse: true,
                         symbol: 'path://M0,0L10,0L10,10L0,10L0,0z',
-                        symbolSize: [1, 6],
+                        symbolSize: [10, 6],
                         symbolOffset: [0, 3],
                         symbolRotate: 30
                     }
                 });
-                makeChart({timeline: {inverse: true, controlStyle: {position: 'right'}}});
+
+                makeChart({timeline: {inverse: true, controlStyle: {position: 'right'}}, width: 400});
 
                 makeChart({timeline: {orient: 'vertical', x: 0, y: 10, width: 55, height: '80%'}});
                 makeChart({timeline: {orient: 'vertical', inverse: true, rewind: true, x: 0, y: 10, width: 55, height: '80%'}});
@@ -118,7 +134,11 @@
                     var containerEl = document.getElementById('main');
                     var el = document.createElement('div');
                     el.className = 'block';
-                    el.innerHTML = '<div class="ec"></div><label>'
+                    var widthString = '';
+                    if (opt.width != null) {
+                        widthString = ' style="width:' + opt.width + 'px" ';
+                    }
+                    el.innerHTML = '<div class="ec" ' + widthString + '></div><label>'
                         + encodeHTML(JSON.stringify(opt)) + '</label>';
                     containerEl.appendChild(el);
 
@@ -212,17 +232,19 @@
                                         symbol : ['arrow','none'],
                                         symbolSize : [4, 2],
                                         itemStyle : {
-                                            normal: {
-                                                lineStyle: {color:'orange'},
-                                                barBorderColor:'orange',
-                                                label:{
-                                                    position:'left',
-                                                    formatter:function(params){
-                                                        return Math.round(params.value);
-                                                    },
-                                                    textStyle:{color:'orange'}
-                                                }
-                                            }
+                                            lineStyle: {color:'orange'},
+                                            barBorderColor:'orange',
+                                        },
+                                        label:{
+                                            // position: 'left' is a invalid value, but exists in this historical file,
+                                            // while will be ignored before v5.0 .
+                                            // But since v5.0, position: 'left' will cause incorrect result.
+                                            // position: 'left',
+                                            position: 'start',
+                                            formatter:function(params){
+                                                return Math.round(params.value);
+                                            },
+                                            textStyle: {color:'orange'}
                                         },
                                         'data':[{'type':'average','name':'平均值'}]
                                     }

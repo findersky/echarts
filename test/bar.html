@@ -1,7 +1,27 @@
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="lib/esl.js"></script>
+        <script src="lib/simpleRequire.js"></script>
         <script src="lib/config.js"></script>
         <script src="lib/jquery.min.js"></script>
         <script src="lib/facePrint.js"></script>
@@ -28,28 +48,7 @@
         <script>
 
         require(
-            (testHelper.hasURLParam('en')
-                ? [
-                    'echarts',
-                    // 'echarts/lang/en',
-                ]
-                : [
-                    'echarts'
-                ]
-            ).concat(
-                [
-                    // 'echarts/chart/bar',
-                    // 'echarts/chart/line',
-                    // 'echarts/component/legend',
-                    // 'echarts/component/graphic',
-                    // 'echarts/component/grid',
-                    // 'echarts/component/tooltip',
-                    // 'echarts/component/brush',
-                    // 'echarts/component/toolbox',
-                    // 'echarts/component/title',
-                    // 'zrender/vml/vml'
-                ]
-            ),
+            ['echarts'],
             function (echarts) {
 
                 var chart = echarts.init(document.getElementById('main'));
@@ -62,7 +61,7 @@
 
                 for (var i = 0; i < 10; i++) {
                     xAxisData.push('类目' + i);
-                    data1.push((Math.random() * 5).toFixed(2));
+                    data1.push(i === 0 ? '-' : (Math.random() * 5).toFixed(2));
                     data2.push(-Math.random().toFixed(2));
                     data3.push((Math.random() + 0.5).toFixed(2));
                     data4.push((Math.random() + 0.3).toFixed(2));
@@ -77,15 +76,16 @@
                         }
                     },
                     emphasis: {
+                        focus: 'series',
                         label: {
                             position: 'outside'
                         },
-                        barBorderColor: '#fff',
-                        barBorderWidth: 1,
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowOffsetY: 0,
-                        shadowColor: 'rgba(0,0,0,0.5)'
+                        // barBorderColor: '#fff',
+                        // barBorderWidth: 1,
+                        // shadowBlur: 10,
+                        // shadowOffsetX: 0,
+                        // shadowOffsetY: 0,
+                        shadowColor: 'rgba(0,0,0,0.3)'
                     }
                 };
 
@@ -118,7 +118,7 @@
                         xAxisIndex: 0
                     },
                     toolbox: {
-                        top: 25,
+                        top: 50,
                         // right: 20,
                         feature: {
                             magicType: {
@@ -144,7 +144,7 @@
                             myTool2: {
                                 show: true,
                                 title: '自定义扩展方法2',
-                                icon: 'image://http://echarts.baidu.com/images/favicon.png',
+                                icon: 'image://./asset/echarts-logo.png',
                                 onclick: function (){
                                     alert('myToolHandler2')
                                 }
@@ -159,6 +159,9 @@
                         }
                     },
                     tooltip: {},
+                    grid: {
+                        top: 100
+                    },
                     xAxis: {
                         data: xAxisData,
                         name: '横轴',
@@ -174,6 +177,9 @@
                         // },
                         axisLine: {
                             onZero: true
+                            // lineStyle: {
+                            //     width: 5
+                            // }
                         },
                         splitLine: {
                             show: true
@@ -186,6 +192,11 @@
                         inverse: true,
                         // axisLabel: {
                         //     show: false
+                        // },
+                        // axisLine: {
+                        //     lineStyle: {
+                        //         width: 5
+                        //     }
                         // },
                         axisTick: {
                             show: false
@@ -202,6 +213,7 @@
                         type: 'bar',
                         stack: 'one',
                         itemStyle: itemStyle,
+                        selectedMode: true,
                         cursor: 'move',
                         data: data1
                     }, {
@@ -209,6 +221,7 @@
                         type: 'bar',
                         stack: 'one',
                         itemStyle: itemStyle,
+                        selectedMode: true,
                         cursor: 'default',
                         data: data2
                     }, {
@@ -216,12 +229,14 @@
                         type: 'bar',
                         stack: 'two',
                         itemStyle: itemStyle,
+                        selectedMode: true,
                         data: data3
                     }, {
                         name: 'bar4',
                         type: 'bar',
                         stack: 'two',
                         itemStyle: itemStyle,
+                        selectedMode: true,
                         data: data4
                     }]
                 });

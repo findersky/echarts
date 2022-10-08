@@ -14,6 +14,7 @@ tmp/
 .svn
 local.properties
 .classpath
+.class
 .settings/
 .loadpath
 
@@ -150,6 +151,7 @@ develop-eggs
 pip-log.txt
 
 # Unit test / coverage reports
+coverage
 .coverage
 .tox
 
@@ -162,14 +164,45 @@ pip-log.txt
 # Mac crap
 .DS_Store
 .idea
+.ideaout
+rat.iml
 
 node_modules
 
-map/tool
-map/raw
+test/data/map/tool
+test/data/map/raw
 theme/thumb
-/lib
+pre-publish-tmp
 todo
-**/*.log
+*.log
 *.sublime-workspace
 *.sublime-project
+
+# Result of node.js perf
+*.asm
+
+# Distribution files
+/esm
+/echarts.all.js
+/echarts.simple.js
+/echarts.common.js
+/echarts.blank.js
+/lib
+/types
+/index.js
+/index.simple.js
+/index.common.js
+/index.blank.js
+/extension-esm
+/extension
+/core.js
+/core.d.ts
+/charts.js
+/charts.d.ts
+/components.js
+/components.d.ts
+/renderers.js
+/renderers.d.ts
+/features.js
+/features.d.ts
+*.tgz

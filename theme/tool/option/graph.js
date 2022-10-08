@@ -1,4 +1,23 @@
-module.exports = {
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+export default {
   "series":[
     {
       "name":"Les Miserables",
@@ -9,10 +28,8 @@ module.exports = {
           "id":"0",
           "name":"Myriel",
           "label":{
-            "normal":{
-              "formatter":"Myriel",
-              "show":false
-            }
+            "formatter":"Myriel",
+            "show":false
           },
           "symbolSize":28.685715,
           "x":-266.82776,
@@ -27,10 +44,8 @@ module.exports = {
           "id":"1",
           "name":"Napoleon",
           "label":{
-            "normal":{
-              "formatter":"Napoleon",
-              "show":false
-            }
+            "formatter":"Napoleon",
+            "show":false
           },
           "symbolSize":4,
           "x":-418.08344,
@@ -45,10 +60,8 @@ module.exports = {
           "id":"2",
           "name":"MlleBaptistine",
           "label":{
-            "normal":{
-              "formatter":"MlleBaptistine",
-              "show":false
-            }
+            "formatter":"MlleBaptistine",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":-212.76357,
@@ -63,10 +76,8 @@ module.exports = {
           "id":"3",
           "name":"MmeMagloire",
           "label":{
-            "normal":{
-              "formatter":"MmeMagloire",
-              "show":false
-            }
+            "formatter":"MmeMagloire",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":-242.82404,
@@ -81,10 +92,8 @@ module.exports = {
           "id":"4",
           "name":"CountessDeLo",
           "label":{
-            "normal":{
-              "formatter":"CountessDeLo",
-              "show":false
-            }
+            "formatter":"CountessDeLo",
+            "show":false
           },
           "symbolSize":4,
           "x":-379.30386,
@@ -99,10 +108,8 @@ module.exports = {
           "id":"5",
           "name":"Geborand",
           "label":{
-            "normal":{
-              "formatter":"Geborand",
-              "show":false
-            }
+            "formatter":"Geborand",
+            "show":false
           },
           "symbolSize":4,
           "x":-417.26337,
@@ -117,10 +124,8 @@ module.exports = {
           "id":"6",
           "name":"Champtercier",
           "label":{
-            "normal":{
-              "formatter":"Champtercier",
-              "show":false
-            }
+            "formatter":"Champtercier",
+            "show":false
           },
           "symbolSize":4,
           "x":-332.6012,
@@ -135,10 +140,8 @@ module.exports = {
           "id":"7",
           "name":"Cravatte",
           "label":{
-            "normal":{
-              "formatter":"Cravatte",
-              "show":false
-            }
+            "formatter":"Cravatte",
+            "show":false
           },
           "symbolSize":4,
           "x":-382.69568,
@@ -153,10 +156,8 @@ module.exports = {
           "id":"8",
           "name":"Count",
           "label":{
-            "normal":{
-              "formatter":"Count",
-              "show":false
-            }
+            "formatter":"Count",
+            "show":false
           },
           "symbolSize":4,
           "x":-320.384,
@@ -171,10 +172,8 @@ module.exports = {
           "id":"9",
           "name":"OldMan",
           "label":{
-            "normal":{
-              "formatter":"OldMan",
-              "show":false
-            }
+            "formatter":"OldMan",
+            "show":false
           },
           "symbolSize":4,
           "x":-344.39832,
@@ -189,10 +188,8 @@ module.exports = {
           "id":"10",
           "name":"Labarre",
           "label":{
-            "normal":{
-              "formatter":"Labarre",
-              "show":false
-            }
+            "formatter":"Labarre",
+            "show":false
           },
           "symbolSize":4,
           "x":-89.34107,
@@ -207,10 +204,8 @@ module.exports = {
           "id":"11",
           "name":"Valjean",
           "label":{
-            "normal":{
-              "formatter":"Valjean",
-              "show":  false
-            }
+            "formatter":"Valjean",
+            "show":  false
           },
           "symbolSize":100,
           "x":-87.93029,
@@ -225,10 +220,8 @@ module.exports = {
           "id":"12",
           "name":"Marguerite",
           "label":{
-            "normal":{
-              "formatter":"Marguerite",
-              "show":false
-            }
+            "formatter":"Marguerite",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":-339.77908,
@@ -243,10 +236,8 @@ module.exports = {
           "id":"13",
           "name":"MmeDeR",
           "label":{
-            "normal":{
-              "formatter":"MmeDeR",
-              "show":false
-            }
+            "formatter":"MmeDeR",
+            "show":false
           },
           "symbolSize":4,
           "x":-194.31313,
@@ -261,10 +252,8 @@ module.exports = {
           "id":"14",
           "name":"Isabeau",
           "label":{
-            "normal":{
-              "formatter":"Isabeau",
-              "show":false
-            }
+            "formatter":"Isabeau",
+            "show":false
           },
           "symbolSize":4,
           "x":-158.05168,
@@ -279,10 +268,8 @@ module.exports = {
           "id":"15",
           "name":"Gervais",
           "label":{
-            "normal":{
-              "formatter":"Gervais",
-              "show":false
-            }
+            "formatter":"Gervais",
+            "show":false
           },
           "symbolSize":4,
           "x":-127.701546,
@@ -297,10 +284,8 @@ module.exports = {
           "id":"16",
           "name":"Tholomyes",
           "label":{
-            "normal":{
-              "formatter":"Tholomyes",
-              "show":false
-            }
+            "formatter":"Tholomyes",
+            "show":false
           },
           "symbolSize":25.942856,
           "x":-385.2226,
@@ -315,10 +300,8 @@ module.exports = {
           "id":"17",
           "name":"Listolier",
           "label":{
-            "normal":{
-              "formatter":"Listolier",
-              "show":false
-            }
+            "formatter":"Listolier",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-516.55884,
@@ -333,10 +316,8 @@ module.exports = {
           "id":"18",
           "name":"Fameuil",
           "label":{
-            "normal":{
-              "formatter":"Fameuil",
-              "show":false
-            }
+            "formatter":"Fameuil",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-464.79382,
@@ -351,10 +332,8 @@ module.exports = {
           "id":"19",
           "name":"Blacheville",
           "label":{
-            "normal":{
-              "formatter":"Blacheville",
-              "show":false
-            }
+            "formatter":"Blacheville",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-515.1624,
@@ -369,10 +348,8 @@ module.exports = {
           "id":"20",
           "name":"Favourite",
           "label":{
-            "normal":{
-              "formatter":"Favourite",
-              "show":false
-            }
+            "formatter":"Favourite",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-408.12122,
@@ -387,10 +364,8 @@ module.exports = {
           "id":"21",
           "name":"Dahlia",
           "label":{
-            "normal":{
-              "formatter":"Dahlia",
-              "show":false
-            }
+            "formatter":"Dahlia",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-456.44113,
@@ -405,10 +380,8 @@ module.exports = {
           "id":"22",
           "name":"Zephine",
           "label":{
-            "normal":{
-              "formatter":"Zephine",
-              "show":false
-            }
+            "formatter":"Zephine",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":-459.1107,
@@ -423,10 +396,8 @@ module.exports = {
           "id":"23",
           "name":"Fantine",
           "label":{
-            "normal":{
-              "formatter":"Fantine",
-              "show":  false
-            }
+            "formatter":"Fantine",
+            "show":  false
           },
           "symbolSize":42.4,
           "x":-313.42786,
@@ -441,10 +412,8 @@ module.exports = {
           "id":"24",
           "name":"MmeThenardier",
           "label":{
-            "normal":{
-              "formatter":"MmeThenardier",
-              "show":  false
-            }
+            "formatter":"MmeThenardier",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":4.6313396,
@@ -459,10 +428,8 @@ module.exports = {
           "id":"25",
           "name":"Thenardier",
           "label":{
-            "normal":{
-              "formatter":"Thenardier",
-              "show":  false
-            }
+            "formatter":"Thenardier",
+            "show":  false
           },
           "symbolSize":45.142853,
           "x":82.80825,
@@ -477,10 +444,8 @@ module.exports = {
           "id":"26",
           "name":"Cosette",
           "label":{
-            "normal":{
-              "formatter":"Cosette",
-              "show":  false
-            }
+            "formatter":"Cosette",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":78.64646,
@@ -495,10 +460,8 @@ module.exports = {
           "id":"27",
           "name":"Javert",
           "label":{
-            "normal":{
-              "formatter":"Javert",
-              "show":  false
-            }
+            "formatter":"Javert",
+            "show":  false
           },
           "symbolSize":47.88571,
           "x":-81.46074,
@@ -513,10 +476,8 @@ module.exports = {
           "id":"28",
           "name":"Fauchelevent",
           "label":{
-            "normal":{
-              "formatter":"Fauchelevent",
-              "show":false
-            }
+            "formatter":"Fauchelevent",
+            "show":false
           },
           "symbolSize":12.228573,
           "x":-225.73984,
@@ -531,10 +492,8 @@ module.exports = {
           "id":"29",
           "name":"Bamatabois",
           "label":{
-            "normal":{
-              "formatter":"Bamatabois",
-              "show":false
-            }
+            "formatter":"Bamatabois",
+            "show":false
           },
           "symbolSize":23.2,
           "x":-385.6842,
@@ -549,10 +508,8 @@ module.exports = {
           "id":"30",
           "name":"Perpetue",
           "label":{
-            "normal":{
-              "formatter":"Perpetue",
-              "show":false
-            }
+            "formatter":"Perpetue",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":-403.92447,
@@ -567,10 +524,8 @@ module.exports = {
           "id":"31",
           "name":"Simplice",
           "label":{
-            "normal":{
-              "formatter":"Simplice",
-              "show":false
-            }
+            "formatter":"Simplice",
+            "show":false
           },
           "symbolSize":12.228573,
           "x":-281.4253,
@@ -585,10 +540,8 @@ module.exports = {
           "id":"32",
           "name":"Scaufflaire",
           "label":{
-            "normal":{
-              "formatter":"Scaufflaire",
-              "show":false
-            }
+            "formatter":"Scaufflaire",
+            "show":false
           },
           "symbolSize":4,
           "x":-122.41348,
@@ -603,10 +556,8 @@ module.exports = {
           "id":"33",
           "name":"Woman1",
           "label":{
-            "normal":{
-              "formatter":"Woman1",
-              "show":false
-            }
+            "formatter":"Woman1",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":-234.6001,
@@ -621,10 +572,8 @@ module.exports = {
           "id":"34",
           "name":"Judge",
           "label":{
-            "normal":{
-              "formatter":"Judge",
-              "show":false
-            }
+            "formatter":"Judge",
+            "show":false
           },
           "symbolSize":17.714287,
           "x":-387.84915,
@@ -639,10 +588,8 @@ module.exports = {
           "id":"35",
           "name":"Champmathieu",
           "label":{
-            "normal":{
-              "formatter":"Champmathieu",
-              "show":false
-            }
+            "formatter":"Champmathieu",
+            "show":false
           },
           "symbolSize":17.714287,
           "x":-338.2307,
@@ -657,10 +604,8 @@ module.exports = {
           "id":"36",
           "name":"Brevet",
           "label":{
-            "normal":{
-              "formatter":"Brevet",
-              "show":false
-            }
+            "formatter":"Brevet",
+            "show":false
           },
           "symbolSize":17.714287,
           "x":-453.26874,
@@ -675,10 +620,8 @@ module.exports = {
           "id":"37",
           "name":"Chenildieu",
           "label":{
-            "normal":{
-              "formatter":"Chenildieu",
-              "show":false
-            }
+            "formatter":"Chenildieu",
+            "show":false
           },
           "symbolSize":17.714287,
           "x":-386.44904,
@@ -693,10 +636,8 @@ module.exports = {
           "id":"38",
           "name":"Cochepaille",
           "label":{
-            "normal":{
-              "formatter":"Cochepaille",
-              "show":false
-            }
+            "formatter":"Cochepaille",
+            "show":false
           },
           "symbolSize":17.714287,
           "x":-446.7876,
@@ -711,10 +652,8 @@ module.exports = {
           "id":"39",
           "name":"Pontmercy",
           "label":{
-            "normal":{
-              "formatter":"Pontmercy",
-              "show":false
-            }
+            "formatter":"Pontmercy",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":336.49738,
@@ -729,10 +668,8 @@ module.exports = {
           "id":"40",
           "name":"Boulatruelle",
           "label":{
-            "normal":{
-              "formatter":"Boulatruelle",
-              "show":false
-            }
+            "formatter":"Boulatruelle",
+            "show":false
           },
           "symbolSize":4,
           "x":29.187843,
@@ -747,10 +684,8 @@ module.exports = {
           "id":"41",
           "name":"Eponine",
           "label":{
-            "normal":{
-              "formatter":"Eponine",
-              "show":  false
-            }
+            "formatter":"Eponine",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":238.36697,
@@ -765,10 +700,8 @@ module.exports = {
           "id":"42",
           "name":"Anzelma",
           "label":{
-            "normal":{
-              "formatter":"Anzelma",
-              "show":false
-            }
+            "formatter":"Anzelma",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":189.69513,
@@ -783,10 +716,8 @@ module.exports = {
           "id":"43",
           "name":"Woman2",
           "label":{
-            "normal":{
-              "formatter":"Woman2",
-              "show":false
-            }
+            "formatter":"Woman2",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":-187.00418,
@@ -801,10 +732,8 @@ module.exports = {
           "id":"44",
           "name":"MotherInnocent",
           "label":{
-            "normal":{
-              "formatter":"MotherInnocent",
-              "show":false
-            }
+            "formatter":"MotherInnocent",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":-252.99521,
@@ -819,10 +748,8 @@ module.exports = {
           "id":"45",
           "name":"Gribier",
           "label":{
-            "normal":{
-              "formatter":"Gribier",
-              "show":false
-            }
+            "formatter":"Gribier",
+            "show":false
           },
           "symbolSize":4,
           "x":-296.07935,
@@ -837,10 +764,8 @@ module.exports = {
           "id":"46",
           "name":"Jondrette",
           "label":{
-            "normal":{
-              "formatter":"Jondrette",
-              "show":false
-            }
+            "formatter":"Jondrette",
+            "show":false
           },
           "symbolSize":4,
           "x":550.3201,
@@ -855,10 +780,8 @@ module.exports = {
           "id":"47",
           "name":"MmeBurgon",
           "label":{
-            "normal":{
-              "formatter":"MmeBurgon",
-              "show":false
-            }
+            "formatter":"MmeBurgon",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":488.13535,
@@ -873,10 +796,8 @@ module.exports = {
           "id":"48",
           "name":"Gavroche",
           "label":{
-            "normal":{
-              "formatter":"Gavroche",
-              "show":  false
-            }
+            "formatter":"Gavroche",
+            "show":  false
           },
           "symbolSize":61.600006,
           "x":387.89572,
@@ -891,10 +812,8 @@ module.exports = {
           "id":"49",
           "name":"Gillenormand",
           "label":{
-            "normal":{
-              "formatter":"Gillenormand",
-              "show":false
-            }
+            "formatter":"Gillenormand",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":126.4831,
@@ -909,10 +828,8 @@ module.exports = {
           "id":"50",
           "name":"Magnon",
           "label":{
-            "normal":{
-              "formatter":"Magnon",
-              "show":false
-            }
+            "formatter":"Magnon",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":127.07365,
@@ -927,10 +844,8 @@ module.exports = {
           "id":"51",
           "name":"MlleGillenormand",
           "label":{
-            "normal":{
-              "formatter":"MlleGillenormand",
-              "show":false
-            }
+            "formatter":"MlleGillenormand",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":162.63559,
@@ -945,10 +860,8 @@ module.exports = {
           "id":"52",
           "name":"MmePontmercy",
           "label":{
-            "normal":{
-              "formatter":"MmePontmercy",
-              "show":false
-            }
+            "formatter":"MmePontmercy",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":353.66415,
@@ -963,10 +876,8 @@ module.exports = {
           "id":"53",
           "name":"MlleVaubois",
           "label":{
-            "normal":{
-              "formatter":"MlleVaubois",
-              "show":false
-            }
+            "formatter":"MlleVaubois",
+            "show":false
           },
           "symbolSize":4,
           "x":165.43939,
@@ -981,10 +892,8 @@ module.exports = {
           "id":"54",
           "name":"LtGillenormand",
           "label":{
-            "normal":{
-              "formatter":"LtGillenormand",
-              "show":false
-            }
+            "formatter":"LtGillenormand",
+            "show":false
           },
           "symbolSize":12.228573,
           "x":137.69348,
@@ -999,10 +908,8 @@ module.exports = {
           "id":"55",
           "name":"Marius",
           "label":{
-            "normal":{
-              "formatter":"Marius",
-              "show":  false
-            }
+            "formatter":"Marius",
+            "show":  false
           },
           "symbolSize":53.37143,
           "x":206.44687,
@@ -1017,10 +924,8 @@ module.exports = {
           "id":"56",
           "name":"BaronessT",
           "label":{
-            "normal":{
-              "formatter":"BaronessT",
-              "show":false
-            }
+            "formatter":"BaronessT",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":194.82993,
@@ -1035,10 +940,8 @@ module.exports = {
           "id":"57",
           "name":"Mabeuf",
           "label":{
-            "normal":{
-              "formatter":"Mabeuf",
-              "show":  false
-            }
+            "formatter":"Mabeuf",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":597.6618,
@@ -1053,10 +956,8 @@ module.exports = {
           "id":"58",
           "name":"Enjolras",
           "label":{
-            "normal":{
-              "formatter":"Enjolras",
-              "show":  false
-            }
+            "formatter":"Enjolras",
+            "show":  false
           },
           "symbolSize":42.4,
           "x":355.78366,
@@ -1071,10 +972,8 @@ module.exports = {
           "id":"59",
           "name":"Combeferre",
           "label":{
-            "normal":{
-              "formatter":"Combeferre",
-              "show":  false
-            }
+            "formatter":"Combeferre",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":515.2961,
@@ -1089,10 +988,8 @@ module.exports = {
           "id":"60",
           "name":"Prouvaire",
           "label":{
-            "normal":{
-              "formatter":"Prouvaire",
-              "show":false
-            }
+            "formatter":"Prouvaire",
+            "show":false
           },
           "symbolSize":25.942856,
           "x":614.29285,
@@ -1107,10 +1004,8 @@ module.exports = {
           "id":"61",
           "name":"Feuilly",
           "label":{
-            "normal":{
-              "formatter":"Feuilly",
-              "show":  false
-            }
+            "formatter":"Feuilly",
+            "show":  false
           },
           "symbolSize":31.428574,
           "x":550.1917,
@@ -1125,10 +1020,8 @@ module.exports = {
           "id":"62",
           "name":"Courfeyrac",
           "label":{
-            "normal":{
-              "formatter":"Courfeyrac",
-              "show":  false
-            }
+            "formatter":"Courfeyrac",
+            "show":  false
           },
           "symbolSize":36.91429,
           "x":436.17184,
@@ -1143,10 +1036,8 @@ module.exports = {
           "id":"63",
           "name":"Bahorel",
           "label":{
-            "normal":{
-              "formatter":"Bahorel",
-              "show":  false
-            }
+            "formatter":"Bahorel",
+            "show":  false
           },
           "symbolSize":34.17143,
           "x":602.55225,
@@ -1161,10 +1052,8 @@ module.exports = {
           "id":"64",
           "name":"Bossuet",
           "label":{
-            "normal":{
-              "formatter":"Bossuet",
-              "show":  false
-            }
+            "formatter":"Bossuet",
+            "show":  false
           },
           "symbolSize":36.91429,
           "x":455.81955,
@@ -1179,10 +1068,8 @@ module.exports = {
           "id":"65",
           "name":"Joly",
           "label":{
-            "normal":{
-              "formatter":"Joly",
-              "show":  false
-            }
+            "formatter":"Joly",
+            "show":  false
           },
           "symbolSize":34.17143,
           "x":516.40784,
@@ -1197,10 +1084,8 @@ module.exports = {
           "id":"66",
           "name":"Grantaire",
           "label":{
-            "normal":{
-              "formatter":"Grantaire",
-              "show":false
-            }
+            "formatter":"Grantaire",
+            "show":false
           },
           "symbolSize":28.685715,
           "x":646.4313,
@@ -1215,10 +1100,8 @@ module.exports = {
           "id":"67",
           "name":"MotherPlutarch",
           "label":{
-            "normal":{
-              "formatter":"MotherPlutarch",
-              "show":false
-            }
+            "formatter":"MotherPlutarch",
+            "show":false
           },
           "symbolSize":4,
           "x":668.9568,
@@ -1233,10 +1116,8 @@ module.exports = {
           "id":"68",
           "name":"Gueulemer",
           "label":{
-            "normal":{
-              "formatter":"Gueulemer",
-              "show":false
-            }
+            "formatter":"Gueulemer",
+            "show":false
           },
           "symbolSize":28.685715,
           "x":78.4799,
@@ -1251,10 +1132,8 @@ module.exports = {
           "id":"69",
           "name":"Babet",
           "label":{
-            "normal":{
-              "formatter":"Babet",
-              "show":false
-            }
+            "formatter":"Babet",
+            "show":false
           },
           "symbolSize":28.685715,
           "x":150.35959,
@@ -1269,10 +1148,8 @@ module.exports = {
           "id":"70",
           "name":"Claquesous",
           "label":{
-            "normal":{
-              "formatter":"Claquesous",
-              "show":false
-            }
+            "formatter":"Claquesous",
+            "show":false
           },
           "symbolSize":28.685715,
           "x":137.3717,
@@ -1287,10 +1164,8 @@ module.exports = {
           "id":"71",
           "name":"Montparnasse",
           "label":{
-            "normal":{
-              "formatter":"Montparnasse",
-              "show":false
-            }
+            "formatter":"Montparnasse",
+            "show":false
           },
           "symbolSize":25.942856,
           "x":234.87747,
@@ -1305,10 +1180,8 @@ module.exports = {
           "id":"72",
           "name":"Toussaint",
           "label":{
-            "normal":{
-              "formatter":"Toussaint",
-              "show":false
-            }
+            "formatter":"Toussaint",
+            "show":false
           },
           "symbolSize":9.485714,
           "x":40.942253,
@@ -1323,10 +1196,8 @@ module.exports = {
           "id":"73",
           "name":"Child1",
           "label":{
-            "normal":{
-              "formatter":"Child1",
-              "show":false
-            }
+            "formatter":"Child1",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":437.939,
@@ -1341,10 +1212,8 @@ module.exports = {
           "id":"74",
           "name":"Child2",
           "label":{
-            "normal":{
-              "formatter":"Child2",
-              "show":false
-            }
+            "formatter":"Child2",
+            "show":false
           },
           "symbolSize":6.742859,
           "x":466.04922,
@@ -1359,10 +1228,8 @@ module.exports = {
           "id":"75",
           "name":"Brujon",
           "label":{
-            "normal":{
-              "formatter":"Brujon",
-              "show":false
-            }
+            "formatter":"Brujon",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":238.79364,
@@ -1377,10 +1244,8 @@ module.exports = {
           "id":"76",
           "name":"MmeHucheloup",
           "label":{
-            "normal":{
-              "formatter":"MmeHucheloup",
-              "show":false
-            }
+            "formatter":"MmeHucheloup",
+            "show":false
           },
           "symbolSize":20.457146,
           "x":712.18353,
@@ -2949,14 +2814,10 @@ module.exports = {
       ],
       "roam":true,
       "label":{
-        "normal":{
-          "position":"right"
-        }
+        "position":"right"
       },
       "lineStyle":{
-        "normal":{
-          "curveness":0.3
-        }
+        "curveness":0.3
       }
     }
   ]

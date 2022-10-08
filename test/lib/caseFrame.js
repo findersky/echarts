@@ -1,3 +1,23 @@
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 /**
  * Dependencies: testHelper.js, jquery, caseFrame.css
  */
@@ -20,8 +40,15 @@
         '    <div class="info-panel">',
         '        <input class="current" />',
         '        <div class="renderer-selector">',
-        '            <input type="radio" value="canvas" name="renderer" /> CANVAS ',
-        '            <input type="radio" value="svg" name="renderer" /> SVG ',
+        '            <div class="render-selector-item">',
+        '               <input type="radio" value="canvas" name="renderer" /> CANVAS ',
+        '            </div>',
+        '           <div class="render-selector-item">',
+        '               <input type="radio" value="dirty-rect" name="renderer" /> CANVAS (dirty rect) ',
+        '            </div>',
+    '                <div class="render-selector-item">',
+        '               <input type="radio" value="svg" name="renderer" /> SVG ',
+        '            </div>',
         '        </div>',
         '        <div class="list-filter"></div>',
         '        <select class="dist-selector">',
@@ -87,13 +114,23 @@
         });
 
         rendererSelector.off('click').on('click', function (e) {
-            setState('renderer', e.target.value);
+            if (e.target.value === 'dirty-rect') {
+                setState('renderer', 'canvas');
+                setState('useDirtyRect', true);
+            }
+            else {
+                setState('renderer', e.target.value);
+                setState('useDirtyRect', false);
+            }
         });
 
         var renderer = getState('renderer');
+        var useDirtyRect = getState('useDirtyRect');
 
         rendererSelector.each(function (index, el) {
-            el.checked = el.value === renderer;
+            el.checked = el.value === 'dirty-rect'
+                ? useDirtyRect
+                : el.value === renderer;
         });
     }
 
@@ -170,6 +207,22 @@
             var matchResult = (pageURL || '').match(/[?&]__RENDERER__=(canvas|svg)(&|$)/);
             return matchResult && matchResult[1] || 'canvas';
         },
+        // true, false, 'auto'
+        useCoarsePointer: function (pageURL) {
+            var matchResult = (pageURL || '').match(/[?&]__USE_COARSE_POINTER__=(true|false|auto)(&|$)/);
+            return matchResult && matchResult[1]
+                ? matchResult[1] === 'true'
+                    ? true
+                    : matchResult[1] === 'false'
+                        ? false
+                        : 'auto'
+                : 'auto';
+        },
+        // true, false
+        useDirtyRect: function (pageURL) {
+            var matchResult = (pageURL || '').match(/[?&]__USE_DIRTY_RECT__=(true|false)(&|$)/);
+            return matchResult && matchResult[1] === 'true';
+        },
         // 'dist', 'webpack', 'webpackold'
         dist: function (pageURL) {
             var matchResult = (pageURL || '').match(/[?&]__ECDIST__=(webpack-req-ec|webpack-req-eclibec|webpackold-req-ec|webpackold-req-eclibec)(&|$)/);
@@ -203,6 +256,7 @@
     function setState(prop, value) {
         var curr = {
             renderer: getState('renderer'),
+            useDirtyRect: getState('useDirtyRect'),
             dist: getState('dist'),
             pagePath: getState('pagePath'),
             listFilterName: getState('listFilterName')
@@ -217,8 +271,10 @@
     function makePageURL(curr) {
         return curr.pagePath + '?' + [
             '__RENDERER__=' + curr.renderer,
+            '__USE_DIRTY_RECT__=' + curr.useDirtyRect,
             '__ECDIST__=' + curr.dist,
-            '__FILTER__=' + curr.listFilterName
+            '__FILTER__=' + curr.listFilterName,
+            '__CASE_FRAME__=1'
         ].join('&');
     }
 
